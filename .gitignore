@@ -1,0 +1,14 @@
+# Mix build artefacts
+/_build/
+/deps/
+*.beam
+
+# NIF shared library (built by `mix compile` / make)
+/priv/vibe_craft_nif.so
+/priv/vibe_craft_nif.dll
+
+# Dialyzer PLTs
+/priv/plts/
+
+# Editor temporaries
+.DS_Store

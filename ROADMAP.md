@@ -14,12 +14,12 @@ This keeps the architecture clean: BEAM handles concurrency and state; the NIF l
 
 ## Project Phases
 
-### Phase 0 — Foundation (current)
+### Phase 0 — Foundation ✓
 
 - [x] Repository skeleton, LICENSE, CONTRIBUTING guide
-- [ ] CI pipeline (formatting, Credo, Dialyzer)
-- [ ] GFX bindings prototype — SDL2 window + OpenGL context via NIF
-- [ ] Asset pipeline — load and display a single original sprite
+- [x] CI pipeline (formatting, Credo, Dialyzer)
+- [x] GFX bindings prototype — SDL2 window + OpenGL context via NIF
+- [x] Asset pipeline — load and display a single original sprite
 
 ### Phase 1 — Version I Mechanics
 
