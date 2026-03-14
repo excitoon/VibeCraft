@@ -20,8 +20,7 @@ defmodule VibeCraft.GFX.NIF do
                clear_screen: 1,
                upload_texture: 4,
                draw_sprite: 6,
-               delete_texture: 2,
-               err: 0
+               delete_texture: 2
              ]}
 
   @doc false

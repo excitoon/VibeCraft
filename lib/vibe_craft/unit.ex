@@ -3,22 +3,59 @@ defmodule VibeCraft.Unit do
   Unit data and movement / melee-combat logic.
 
   Units occupy a single tile.  Ground units move one tile per tick in a
-  cardinal direction and can melee-attack adjacent enemy units.
+  cardinal direction and can melee-attack adjacent enemy units.  Naval units
+  move on water tiles, and air units fly over any terrain.
 
-  ## Unit types
+  ## Phase 1 unit types (ground layer)
 
-  | Type       | Role          | HP | Attack |
-  |------------|---------------|----|--------|
-  | `:footman` | Human fighter | 60 | 6      |
-  | `:peasant` | Human worker  | 30 | 3      |
-  | `:grunt`   | Orc fighter   | 60 | 8      |
-  | `:peon`    | Orc worker    | 30 | 3      |
+  | Type           | Role               | HP  | Attack |
+  |----------------|--------------------|-----|--------|
+  | `:footman`     | Human fighter      | 60  | 6      |
+  | `:peasant`     | Human worker       | 30  | 3      |
+  | `:grunt`       | Orc fighter        | 60  | 8      |
+  | `:peon`        | Orc worker         | 30  | 3      |
+
+  ## Phase 2 naval unit types (naval layer)
+
+  | Type           | Role               | HP  | Attack |
+  |----------------|--------------------|-----|--------|
+  | `:destroyer`   | Naval fighter      | 100 | 10     |
+  | `:battleship`  | Heavy naval gun    | 150 | 15     |
+  | `:oil_tanker`  | Naval worker       | 60  | 0      |
+  | `:transport`   | Troop transport    | 80  | 0      |
+
+  ## Phase 2 air unit types (air layer)
+
+  | Type        | Role            | HP  | Attack |
+  |-------------|-----------------|-----|--------|
+  | `:gryphon`  | Human air unit  | 80  | 12     |
+  | `:dragon`   | Orc air unit    | 120 | 16     |
+
+  ## Phase 2 hero unit types (ground layer with mana)
+
+  | Type            | Role             | HP  | Attack | Mana |
+  |-----------------|------------------|-----|--------|------|
+  | `:paladin`      | Human hero       | 150 | 12     | 200  |
+  | `:death_knight` | Orc hero         | 150 | 15     | 200  |
   """
 
   alias VibeCraft.Map.{Map, Tile}
 
   @type player :: :player1 | :player2
-  @type unit_type :: :footman | :peasant | :grunt | :peon
+  @type layer :: :ground | :naval | :air
+  @type unit_type ::
+          :footman
+          | :peasant
+          | :grunt
+          | :peon
+          | :destroyer
+          | :battleship
+          | :oil_tanker
+          | :transport
+          | :gryphon
+          | :dragon
+          | :paladin
+          | :death_knight
 
   @type t :: %__MODULE__{
           id: pos_integer(),
@@ -27,8 +64,13 @@ defmodule VibeCraft.Unit do
           position: Map.position(),
           hp: non_neg_integer(),
           max_hp: pos_integer(),
-          attack: pos_integer(),
+          attack: non_neg_integer(),
           sight_radius: pos_integer(),
+          layer: layer(),
+          mana: non_neg_integer(),
+          max_mana: non_neg_integer(),
+          xp: non_neg_integer(),
+          level: pos_integer(),
           carrying_gold: non_neg_integer(),
           carrying_lumber: non_neg_integer()
         }
@@ -43,21 +85,39 @@ defmodule VibeCraft.Unit do
     :max_hp,
     :attack,
     :sight_radius,
+    layer: :ground,
+    mana: 0,
+    max_mana: 0,
+    xp: 0,
+    level: 1,
     carrying_gold: 0,
     carrying_lumber: 0
   ]
 
   @stats %{
-    footman: %{hp: 60, attack: 6, sight_radius: 4},
-    peasant: %{hp: 30, attack: 3, sight_radius: 4},
-    grunt: %{hp: 60, attack: 8, sight_radius: 4},
-    peon: %{hp: 30, attack: 3, sight_radius: 4}
+    # Phase 1 — ground units
+    footman: %{hp: 60, attack: 6, sight_radius: 4, layer: :ground, max_mana: 0},
+    peasant: %{hp: 30, attack: 3, sight_radius: 4, layer: :ground, max_mana: 0},
+    grunt: %{hp: 60, attack: 8, sight_radius: 4, layer: :ground, max_mana: 0},
+    peon: %{hp: 30, attack: 3, sight_radius: 4, layer: :ground, max_mana: 0},
+    # Phase 2 — naval units
+    destroyer: %{hp: 100, attack: 10, sight_radius: 5, layer: :naval, max_mana: 0},
+    battleship: %{hp: 150, attack: 15, sight_radius: 6, layer: :naval, max_mana: 0},
+    oil_tanker: %{hp: 60, attack: 0, sight_radius: 4, layer: :naval, max_mana: 0},
+    transport: %{hp: 80, attack: 0, sight_radius: 4, layer: :naval, max_mana: 0},
+    # Phase 2 — air units
+    gryphon: %{hp: 80, attack: 12, sight_radius: 6, layer: :air, max_mana: 0},
+    dragon: %{hp: 120, attack: 16, sight_radius: 6, layer: :air, max_mana: 0},
+    # Phase 2 — hero units (ground, with mana)
+    paladin: %{hp: 150, attack: 12, sight_radius: 5, layer: :ground, max_mana: 200},
+    death_knight: %{hp: 150, attack: 15, sight_radius: 5, layer: :ground, max_mana: 200}
   }
 
   @doc "Create a new unit of the given type for `player` at `position`."
   @spec new(pos_integer(), unit_type(), player(), Map.position()) :: t()
   def new(id, type, player, position) do
-    %{hp: hp, attack: attack, sight_radius: sight_radius} = @stats[type]
+    %{hp: hp, attack: attack, sight_radius: sight_radius, layer: layer, max_mana: max_mana} =
+      @stats[type]
 
     %__MODULE__{
       id: id,
@@ -67,7 +127,10 @@ defmodule VibeCraft.Unit do
       hp: hp,
       max_hp: hp,
       attack: attack,
-      sight_radius: sight_radius
+      sight_radius: sight_radius,
+      layer: layer,
+      mana: max_mana,
+      max_mana: max_mana
     }
   end
 
@@ -83,12 +146,17 @@ defmodule VibeCraft.Unit do
   Move the unit one tile to `target`.
 
   Returns `{:ok, updated_unit}` when `target` is exactly one step away and
-  the destination tile is passable.  Otherwise returns `{:error, reason}`
-  where reason is one of `:not_adjacent`, `:out_of_bounds`, or `:impassable`.
+  the destination tile is passable for the unit's layer.  Otherwise returns
+  `{:error, reason}` where reason is one of `:not_adjacent`, `:out_of_bounds`,
+  or `:impassable`.
+
+  - Ground units require a `:grass` tile.
+  - Naval units require a `:water` tile.
+  - Air units may move over any tile.
   """
   @spec move(t(), Map.position(), Map.t()) ::
           {:ok, t()} | {:error, :not_adjacent | :impassable | :out_of_bounds}
-  def move(%__MODULE__{position: {cx, cy}} = unit, {tx, ty} = target, map) do
+  def move(%__MODULE__{position: {cx, cy}, layer: layer} = unit, {tx, ty} = target, map) do
     distance = abs(tx - cx) + abs(ty - cy)
 
     cond do
@@ -98,7 +166,7 @@ defmodule VibeCraft.Unit do
       not Map.in_bounds?(map, target) ->
         {:error, :out_of_bounds}
 
-      not passable?(Map.tile_at(map, target)) ->
+      not passable_for_layer?(Map.tile_at(map, target), layer) ->
         {:error, :impassable}
 
       true ->
@@ -131,7 +199,44 @@ defmodule VibeCraft.Unit do
   def harvest_amount(type) when type in [:peasant, :peon], do: {10, 10}
   def harvest_amount(_type), do: {0, 0}
 
-  @spec passable?(Tile.t() | nil) :: boolean()
-  defp passable?(nil), do: false
-  defp passable?(tile), do: Tile.passable?(tile)
+  @doc """
+  Spend `cost` mana from `unit`.
+
+  Returns `{:ok, updated_unit}` when the unit has sufficient mana, or
+  `{:error, :insufficient_mana}` otherwise.
+  """
+  @spec spend_mana(t(), non_neg_integer()) :: {:ok, t()} | {:error, :insufficient_mana}
+  def spend_mana(%__MODULE__{mana: mana} = unit, cost) when mana >= cost do
+    {:ok, %{unit | mana: mana - cost}}
+  end
+
+  def spend_mana(_unit, _cost), do: {:error, :insufficient_mana}
+
+  @doc """
+  Regenerate one point of mana for units that have a mana pool.
+
+  No-op for units with `max_mana == 0`.
+  """
+  @spec tick_mana(t()) :: t()
+  def tick_mana(%__MODULE__{max_mana: 0} = unit), do: unit
+
+  def tick_mana(%__MODULE__{mana: mana, max_mana: max_mana} = unit) do
+    %{unit | mana: min(mana + 1, max_mana)}
+  end
+
+  @doc """
+  Add `xp_gained` experience points to `unit`.
+
+  The returned unit has its `xp` field updated.  Actual level-up logic is
+  handled by `VibeCraft.Hero.gain_xp/2` which calls this function and then
+  applies stat increases.
+  """
+  @spec add_xp(t(), non_neg_integer()) :: t()
+  def add_xp(%__MODULE__{xp: xp} = unit, xp_gained), do: %{unit | xp: xp + xp_gained}
+
+  @spec passable_for_layer?(Tile.t() | nil, layer()) :: boolean()
+  defp passable_for_layer?(nil, _layer), do: false
+  defp passable_for_layer?(tile, :ground), do: Tile.passable?(tile)
+  defp passable_for_layer?(tile, :naval), do: Tile.naval_passable?(tile)
+  defp passable_for_layer?(_tile, :air), do: true
 end

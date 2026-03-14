@@ -46,17 +46,22 @@ defmodule VibeCraft.AI do
       end)
 
     Enum.reduce(workers, state, fn worker, acc ->
-      case find_nearest_resource(map, worker.position) do
-        nil ->
-          acc
-
-        target_pos ->
-          case step_toward(worker, target_pos, map) do
-            {:ok, moved} -> put_in(acc, [:units, worker.id], moved)
-            {:error, _} -> acc
-          end
-      end
+      move_worker_toward_resource(worker, map, acc)
     end)
+  end
+
+  @spec move_worker_toward_resource(Unit.t(), GameMap.t(), game_state()) :: game_state()
+  defp move_worker_toward_resource(worker, map, acc) do
+    case find_nearest_resource(map, worker.position) do
+      nil ->
+        acc
+
+      target_pos ->
+        case step_toward(worker, target_pos, map) do
+          {:ok, moved} -> put_in(acc, [:units, worker.id], moved)
+          {:error, _} -> acc
+        end
+    end
   end
 
   @spec find_nearest_resource(GameMap.t(), GameMap.position()) :: GameMap.position() | nil
@@ -89,14 +94,7 @@ defmodule VibeCraft.AI do
 
         if Resources.sufficient?(p2_res, gold_cost, lumber_cost) and
              length(barracks.training_queue) < 3 do
-          with {:ok, updated_barracks} <- Building.enqueue_training(barracks, :grunt),
-               {:ok, new_resources} <- Resources.spend(p2_res, gold_cost, lumber_cost) do
-            state
-            |> put_in([:buildings, barracks.id], updated_barracks)
-            |> put_in([:resources, :player2], new_resources)
-          else
-            _ -> state
-          end
+          enqueue_grunt(barracks, p2_res, gold_cost, lumber_cost, state)
         else
           state
         end
@@ -105,13 +103,34 @@ defmodule VibeCraft.AI do
 
   # ── Combat movement ───────────────────────────────────────────────────────
 
+  @spec enqueue_grunt(
+          Building.t(),
+          Resources.t(),
+          non_neg_integer(),
+          non_neg_integer(),
+          game_state()
+        ) ::
+          game_state()
+  defp enqueue_grunt(barracks, p2_res, gold_cost, lumber_cost, state) do
+    with {:ok, updated_barracks} <- Building.enqueue_training(barracks, :grunt),
+         {:ok, new_resources} <- Resources.spend(p2_res, gold_cost, lumber_cost) do
+      state
+      |> put_in([:buildings, barracks.id], updated_barracks)
+      |> put_in([:resources, :player2], new_resources)
+    else
+      _ -> state
+    end
+  end
+
   @spec move_combat_units(game_state()) :: game_state()
   defp move_combat_units(%{units: units, map: map} = state) do
     fighters =
       units
       |> Map.values()
       |> Enum.filter(fn u ->
-        u.player == :player2 and u.type in [:grunt, :footman] and Unit.alive?(u)
+        u.player == :player2 and
+          u.type in [:grunt, :footman, :destroyer, :battleship, :gryphon, :dragon, :death_knight] and
+          Unit.alive?(u)
       end)
 
     p1_positions =
@@ -126,21 +145,27 @@ defmodule VibeCraft.AI do
 
       targets ->
         Enum.reduce(fighters, state, fn fighter, acc ->
-          nearest =
-            Enum.min_by(targets, fn {tc, tr} ->
-              {fc, fr} = fighter.position
-              abs(tc - fc) + abs(tr - fr)
-            end)
-
-          case step_toward(fighter, nearest, map) do
-            {:ok, moved} -> put_in(acc, [:units, fighter.id], moved)
-            {:error, _} -> acc
-          end
+          move_fighter_toward_nearest(fighter, targets, map, acc)
         end)
     end
   end
 
   # ── Melee attack ──────────────────────────────────────────────────────────
+
+  @spec move_fighter_toward_nearest(Unit.t(), [GameMap.position()], GameMap.t(), game_state()) ::
+          game_state()
+  defp move_fighter_toward_nearest(fighter, targets, map, acc) do
+    nearest =
+      Enum.min_by(targets, fn {tc, tr} ->
+        {fc, fr} = fighter.position
+        abs(tc - fc) + abs(tr - fr)
+      end)
+
+    case step_toward(fighter, nearest, map) do
+      {:ok, moved} -> put_in(acc, [:units, fighter.id], moved)
+      {:error, _} -> acc
+    end
+  end
 
   @spec attack_adjacent_enemies(game_state()) :: game_state()
   defp attack_adjacent_enemies(%{units: units} = state) do
@@ -170,12 +195,12 @@ defmodule VibeCraft.AI do
 
   @spec step_toward(Unit.t(), GameMap.position(), GameMap.t()) ::
           {:ok, Unit.t()} | {:error, :no_path | :not_adjacent | :impassable | :out_of_bounds}
-  defp step_toward(%{position: {cx, cy}} = unit, {tx, ty}, map) do
+  defp step_toward(%{position: {cx, cy}, layer: layer} = unit, {tx, ty}, map) do
     best =
       [{cx - 1, cy}, {cx + 1, cy}, {cx, cy - 1}, {cx, cy + 1}]
       |> Enum.filter(fn pos ->
         GameMap.in_bounds?(map, pos) and
-          map |> GameMap.tile_at(pos) |> Tile.passable?()
+          tile_passable_for_layer?(GameMap.tile_at(map, pos), layer)
       end)
       |> Enum.min_by(fn {nc, nr} -> abs(nc - tx) + abs(nr - ty) end, fn -> nil end)
 
@@ -184,4 +209,10 @@ defmodule VibeCraft.AI do
       pos -> Unit.move(unit, pos, map)
     end
   end
+
+  @spec tile_passable_for_layer?(Tile.t() | nil, Unit.layer()) :: boolean()
+  defp tile_passable_for_layer?(nil, _layer), do: false
+  defp tile_passable_for_layer?(tile, :ground), do: Tile.passable?(tile)
+  defp tile_passable_for_layer?(tile, :naval), do: Tile.naval_passable?(tile)
+  defp tile_passable_for_layer?(_tile, :air), do: true
 end
