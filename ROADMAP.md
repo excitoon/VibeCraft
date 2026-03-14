@@ -25,12 +25,12 @@ This keeps the architecture clean: BEAM handles concurrency and state; the NIF l
 
 Goal: a playable single-player skirmish with Version I rules.
 
-- [ ] Map loader (tile-based terrain, fog of war)
-- [ ] Unit system — movement, basic melee combat
-- [ ] Resource gathering (Gold, Lumber)
-- [ ] Building construction and unit training queue
-- [ ] Simple AI opponent
-- [ ] Original art set: terrain tiles, at least two unit types, two building types
+- [x] Map loader (tile-based terrain, fog of war)
+- [x] Unit system — movement, basic melee combat
+- [x] Resource gathering (Gold, Lumber)
+- [x] Building construction and unit training queue
+- [x] Simple AI opponent
+- [x] Original art set: terrain tiles, at least two unit types, two building types
 
 ### Phase 2 — Version II Mechanics
 
