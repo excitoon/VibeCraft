@@ -51,13 +51,18 @@ defmodule VibeCraft.Map.Loader do
         {:error, :empty_map}
 
       _ ->
-        row_width = rows |> List.first() |> String.length()
+        validate_and_build_map(rows)
+    end
+  end
 
-        if Enum.all?(rows, fn row -> String.length(row) == row_width end) do
-          build_map(rows)
-        else
-          {:error, :inconsistent_row_widths}
-        end
+  @spec validate_and_build_map([String.t()]) :: {:ok, Map.t()} | {:error, term()}
+  defp validate_and_build_map(rows) do
+    row_width = rows |> List.first() |> String.length()
+
+    if Enum.all?(rows, fn row -> String.length(row) == row_width end) do
+      build_map(rows)
+    else
+      {:error, :inconsistent_row_widths}
     end
   end
 
