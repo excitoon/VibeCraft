@@ -77,9 +77,7 @@ defmodule VibeCraft.AI do
     p2_barracks =
       buildings
       |> Map.values()
-      |> Enum.find(
-        &(&1.player == :player2 and &1.type == :barracks and Building.standing?(&1))
-      )
+      |> Enum.find(&(&1.player == :player2 and &1.type == :barracks and Building.standing?(&1)))
 
     case p2_barracks do
       nil ->

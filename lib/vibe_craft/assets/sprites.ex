@@ -494,6 +494,7 @@ defmodule VibeCraft.Assets.Sprites do
 
   # ── Private helpers ────────────────────────────────────────────────────────
 
+  @dialyzer {:nowarn_function, render_art: 3, char_to_rgba: 1}
   @spec render_art(String.t(), pos_integer(), pos_integer()) :: Sprite.t()
   defp render_art(art, width, height) do
     pixels =

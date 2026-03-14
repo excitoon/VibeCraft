@@ -5,19 +5,19 @@ defmodule VibeCraft.Campaign.MissionTest do
   defmodule SampleMission do
     use VibeCraft.Campaign.Mission
 
-    mission_name "Storm the Gates"
+    mission_name("Storm the Gates")
 
-    objective :destroy_all_enemies
-    objective :survive_20_ticks
+    objective(:destroy_all_enemies)
+    objective(:survive_20_ticks)
   end
 
   # A mission that overrides all callbacks.
   defmodule CustomCallbackMission do
     use VibeCraft.Campaign.Mission
 
-    mission_name "Custom Callbacks"
+    mission_name("Custom Callbacks")
 
-    objective :collect_500_gold
+    objective(:collect_500_gold)
 
     @impl VibeCraft.Campaign.Mission
     def on_start(game), do: Map.put(game, :started, true)
