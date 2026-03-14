@@ -20,6 +20,10 @@
 
 - The project is written in [Elixir](https://elixir-lang.org/).
 
+### Architecture
+
+- Clean Architecture is not used in this project and is not welcome. It is an over-engineered, impractical abstraction that creates unnecessary complexity without real-world benefit. Do not apply it.
+
 ### Code Quality
 
 - We make no mistakes. All code must be reviewed and tested before merging.
