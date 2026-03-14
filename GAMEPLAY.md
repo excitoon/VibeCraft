@@ -36,7 +36,15 @@ damage than their Human counterparts, giving the Horde an aggressive edge.
 
 All units occupy a single tile and move one tile per tick in a cardinal direction.
 Units belong to one of three layers — **ground**, **naval**, or **air** — each with
-their own movement rules.
+its own movement rules.
+
+### Stat glossary
+
+**HP** — hit points at full health.  
+**Attack** — melee damage dealt per strike.  
+**Sight** — fog-of-war reveal radius in tiles.  
+**Gold / Lumber** — resource cost to train.  
+**Train (ticks)** — game ticks from queue entry to spawn.
 
 ### Ground units
 
@@ -67,15 +75,7 @@ Air units fly over any terrain and cannot be blocked by ground or naval obstacle
 | `:gryphon`  | Human | Air fighter    | 80  | 12     | 6     |
 | `:dragon`   | Orc   | Air fighter    | 120 | 16     | 6     |
 
-### Stat glossary
-
-**HP** — hit points at full health.  
-**Attack** — melee damage dealt per strike.  
-**Sight** — fog-of-war reveal radius in tiles.  
-**Gold / Lumber** — resource cost to train.  
-**Train (ticks)** — game ticks from queue entry to spawn.
-
-#### Worker abilities
+### Worker abilities
 
 Workers (`:peasant`, `:peon`) can harvest resources.  Each trip to a mine or lumber stand
 yields **10 gold** or **10 lumber**, deposited back at the nearest town hall.
