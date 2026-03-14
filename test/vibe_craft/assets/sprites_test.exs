@@ -19,11 +19,14 @@ defmodule VibeCraft.Assets.SpritesTest do
       end
     end
 
-    test "outline pixels are black" do
+    test "all opaque pixels are either pure black (outline) or pure white (fill)" do
       sprite = Sprites.cursor()
 
       for <<r::8, g::8, b::8, a::8 <- sprite.pixels>>, a == 255 do
-        assert r == 0 or r == 255,
+        is_black = r == 0 and g == 0 and b == 0
+        is_white = r == 255 and g == 255 and b == 255
+
+        assert is_black or is_white,
                "expected opaque pixel to be black or white, got R=#{r} G=#{g} B=#{b}"
       end
     end
