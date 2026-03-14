@@ -79,6 +79,37 @@ Goal: full feature parity with a modern RTS/RPG hybrid.
 
 ---
 
+## Reference Implementations
+
+The following projects serve as research references for engine design, mechanics, and platform compatibility.
+
+### 1. Original Game
+
+The original commercial RTS title (Version I through Version III) that VibeCraft draws its mechanical inspiration from.
+
+### 2. Dedicated Open-Source RTS Engine Re-implementations
+
+Community-built engines that re-implement the core RTS mechanics from scratch:
+
+- **Mod Engine** — A Java-based engine built on [LibGDX](https://libgdx.com/). Designed for modding and requires the legal original game assets to function.
+- **Warsmash** — An Android port/fork of Mod Engine specifically targeting mobile devices.
+- **Stratagus** — A free, cross-platform RTS game engine capable of running various strategy game rulesets; often used in re-implementation contexts.
+
+### 3. Windows Compatibility Layers (Mobile / Linux)
+
+General-purpose Windows-on-Linux/Android solutions that can run the native Windows game client on alternative operating systems:
+
+- **Winlator** — An Android application based on [Wine](https://www.winehq.org/) and Box86/Box64 for running Windows titles.
+- **Exagear** — An Android application widely used to run older Windows games through binary translation.
+- **Mobox** — A Windows-emulation layer for Android optimized for gaming performance.
+
+### 4. Legacy LAN / Netplay Platforms
+
+- **Garena** — A popular platform historically used to play the original game over emulated local area networks.
+- **MAMEHub** — An open-source extension of [MAME](https://www.mamedev.org/) that adds cross-platform netplay support for a wide range of titles.
+
+---
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for coding standards and PR guidelines.
