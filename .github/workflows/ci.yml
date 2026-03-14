@@ -10,9 +10,9 @@ env:
   MIX_ENV: test
 
 jobs:
-  # ── format / credo / compile / test ──────────────────────────────────────
-  ci:
-    name: Format · Credo · Test
+  # ── format / credo / hex audit ───────────────────────────────────────────
+  lint:
+    name: Lint (Format · Credo · Audit)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,16 +26,11 @@ jobs:
           elixir-version: "1.16"
           otp-version: "26"
 
-      - name: Install native dependencies
-        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libglew-dev
-
       - name: Restore Mix dependency cache
         uses: actions/cache@v4
         id: mix-cache
         with:
-          path: |
-            deps
-            _build
+          path: deps
           key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
 
@@ -48,6 +43,49 @@ jobs:
 
       - name: Run Credo (strict)
         run: mix credo --strict
+
+      - name: Audit Hex packages
+        run: mix hex.audit
+
+  # ── compile / test (matrix) ──────────────────────────────────────────────
+  test:
+    name: Test (OTP ${{ matrix.otp }} · Elixir ${{ matrix.elixir }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - otp: "26"
+            elixir: "1.16"
+          - otp: "27"
+            elixir: "1.17"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Erlang/Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      - name: Install native dependencies
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libglew-dev
+
+      - name: Restore Mix dependency cache
+        uses: actions/cache@v4
+        id: mix-cache
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-otp${{ matrix.otp }}-elixir${{ matrix.elixir }}-${{ hashFiles('mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-otp${{ matrix.otp }}-elixir${{ matrix.elixir }}-
+
+      - name: Install Mix dependencies
+        if: steps.mix-cache.outputs.cache-hit != 'true'
+        run: mix deps.get
 
       - name: Compile (including NIF)
         run: mix compile --warnings-as-errors
@@ -78,9 +116,7 @@ jobs:
         uses: actions/cache@v4
         id: mix-cache
         with:
-          path: |
-            deps
-            _build
+          path: deps
           key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
 
