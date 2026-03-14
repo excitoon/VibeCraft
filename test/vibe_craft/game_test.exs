@@ -2,12 +2,13 @@ defmodule VibeCraft.GameTest do
   use ExUnit.Case, async: true
 
   alias VibeCraft.{Building, Game, Resources, Unit}
-  alias VibeCraft.Map.{Map, Tile}
+  alias VibeCraft.Map.Map, as: GameMap
+  alias VibeCraft.Map.Tile
 
   # 5×5 all-grass map.
   defp grass_map do
     rows = for _ <- 0..4, do: for(_ <- 0..4, do: Tile.new(:grass))
-    Map.new(rows)
+    GameMap.new(rows)
   end
 
   describe "new/1" do
@@ -61,7 +62,7 @@ defmodule VibeCraft.GameTest do
         [Tile.new(:grass), Tile.new(:grass)]
       ]
 
-      game = Game.new(Map.new(rows))
+      game = Game.new(GameMap.new(rows))
       {game, unit} = Game.add_unit(game, :footman, :player1, {0, 0})
       assert {:error, :impassable} = Game.move_unit(game, unit, {1, 0})
     end

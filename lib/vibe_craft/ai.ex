@@ -41,7 +41,9 @@ defmodule VibeCraft.AI do
     workers =
       units
       |> Map.values()
-      |> Enum.filter(&(&1.player == :player2 and &1.type in [:peon, :peasant] and Unit.alive?(&1)))
+      |> Enum.filter(fn u ->
+        u.player == :player2 and u.type in [:peon, :peasant] and Unit.alive?(u)
+      end)
 
     Enum.reduce(workers, state, fn worker, acc ->
       case find_nearest_resource(map, worker.position) do
@@ -110,7 +112,9 @@ defmodule VibeCraft.AI do
     fighters =
       units
       |> Map.values()
-      |> Enum.filter(&(&1.player == :player2 and &1.type in [:grunt, :footman] and Unit.alive?(&1)))
+      |> Enum.filter(fn u ->
+        u.player == :player2 and u.type in [:grunt, :footman] and Unit.alive?(u)
+      end)
 
     p1_positions =
       units
