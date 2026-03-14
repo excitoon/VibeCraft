@@ -113,7 +113,9 @@ defmodule VibeCraft.AI do
       units
       |> Map.values()
       |> Enum.filter(fn u ->
-        u.player == :player2 and u.type in [:grunt, :footman] and Unit.alive?(u)
+        u.player == :player2 and
+          u.type in [:grunt, :footman, :destroyer, :battleship, :gryphon, :dragon, :death_knight] and
+          Unit.alive?(u)
       end)
 
     p1_positions =
@@ -172,12 +174,12 @@ defmodule VibeCraft.AI do
 
   @spec step_toward(Unit.t(), GameMap.position(), GameMap.t()) ::
           {:ok, Unit.t()} | {:error, :no_path | :not_adjacent | :impassable | :out_of_bounds}
-  defp step_toward(%{position: {cx, cy}} = unit, {tx, ty}, map) do
+  defp step_toward(%{position: {cx, cy}, layer: layer} = unit, {tx, ty}, map) do
     best =
       [{cx - 1, cy}, {cx + 1, cy}, {cx, cy - 1}, {cx, cy + 1}]
       |> Enum.filter(fn pos ->
         GameMap.in_bounds?(map, pos) and
-          (map |> GameMap.tile_at(pos) |> Tile.passable?())
+          tile_passable_for_layer?(GameMap.tile_at(map, pos), layer)
       end)
       |> Enum.min_by(fn {nc, nr} -> abs(nc - tx) + abs(nr - ty) end, fn -> nil end)
 
@@ -186,4 +188,10 @@ defmodule VibeCraft.AI do
       pos -> Unit.move(unit, pos, map)
     end
   end
+
+  @spec tile_passable_for_layer?(Tile.t() | nil, Unit.layer()) :: boolean()
+  defp tile_passable_for_layer?(nil, _layer), do: false
+  defp tile_passable_for_layer?(tile, :ground), do: Tile.passable?(tile)
+  defp tile_passable_for_layer?(tile, :naval), do: Tile.naval_passable?(tile)
+  defp tile_passable_for_layer?(_tile, :air), do: true
 end

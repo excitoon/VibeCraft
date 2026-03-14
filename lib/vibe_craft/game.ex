@@ -15,7 +15,7 @@ defmodule VibeCraft.Game do
       game = Game.tick(game)
   """
 
-  alias VibeCraft.{AI, Building, Resources, Unit}
+  alias VibeCraft.{AI, Building, Hero, Resources, Unit}
   alias VibeCraft.Map.Map, as: GameMap
 
   @type player :: Unit.player()
@@ -77,17 +77,23 @@ defmodule VibeCraft.Game do
   @doc """
   Have `attacker` deal one melee strike to `defender`.
 
-  Dead units are removed from the game.
+  Dead units are removed from the game.  When the defender is killed the
+  attacker gains experience equal to the defender's maximum HP; heroes
+  may level up as a result.
   """
   @spec attack(t(), Unit.t(), Unit.t()) :: t()
   def attack(game, attacker, defender) do
     damaged = Unit.attack(attacker, defender)
 
-    units =
-      if Unit.alive?(damaged),
-        do: Map.put(game.units, defender.id, damaged),
-        else: Map.delete(game.units, defender.id)
+    {units, updated_attacker} =
+      if Unit.alive?(damaged) do
+        {Map.put(game.units, defender.id, damaged), attacker}
+      else
+        leveled_attacker = Hero.gain_xp(attacker, defender.max_hp)
+        {Map.delete(game.units, defender.id), leveled_attacker}
+      end
 
+    units = Map.put(units, attacker.id, updated_attacker)
     %{game | units: units}
   end
 
@@ -118,11 +124,12 @@ defmodule VibeCraft.Game do
 
   Per-tick operations, in order:
   1. Advance all building training queues; spawn newly trained units.
-  2. Remove dead units (HP ≤ 0).
-  3. Update fog of war from player 1's positions.
-  4. Run the AI for player 2.
-  5. Check and record a victory/draw condition.
-  6. Increment the tick counter.
+  2. Regenerate mana for all spellcasting units.
+  3. Remove dead units (HP ≤ 0).
+  4. Update fog of war from player 1's positions.
+  5. Run the AI for player 2.
+  6. Check and record a victory/draw condition.
+  7. Increment the tick counter.
 
   No-ops when the game is already decided.
   """
@@ -132,6 +139,7 @@ defmodule VibeCraft.Game do
   def tick(game) do
     game
     |> advance_training_queues()
+    |> regenerate_mana()
     |> remove_dead_units()
     |> update_fog_of_war()
     |> ai_turn()
@@ -173,6 +181,11 @@ defmodule VibeCraft.Game do
   @spec remove_dead_units(t()) :: t()
   defp remove_dead_units(%{units: units} = game) do
     %{game | units: Map.filter(units, fn {_id, u} -> Unit.alive?(u) end)}
+  end
+
+  @spec regenerate_mana(t()) :: t()
+  defp regenerate_mana(%{units: units} = game) do
+    %{game | units: Map.new(units, fn {id, unit} -> {id, Unit.tick_mana(unit)} end)}
   end
 
   @spec update_fog_of_war(t()) :: t()

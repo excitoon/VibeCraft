@@ -57,6 +57,40 @@ defmodule VibeCraft.Map.TileTest do
     end
   end
 
+  describe "naval_passable?/1" do
+    test "water is naval-passable" do
+      assert Tile.naval_passable?(Tile.new(:water))
+    end
+
+    test "grass is not naval-passable" do
+      refute Tile.naval_passable?(Tile.new(:grass))
+    end
+
+    test "trees is not naval-passable" do
+      refute Tile.naval_passable?(Tile.new(:trees))
+    end
+
+    test "rock is not naval-passable" do
+      refute Tile.naval_passable?(Tile.new(:rock))
+    end
+
+    test "gold mine is not naval-passable" do
+      refute Tile.naval_passable?(Tile.new(:gold_mine))
+    end
+  end
+
+  describe "air_passable?/1" do
+    test "any concrete tile is air-passable" do
+      for type <- [:grass, :water, :trees, :rock, :gold_mine] do
+        assert Tile.air_passable?(Tile.new(type)), "expected #{type} to be air-passable"
+      end
+    end
+
+    test "nil is not air-passable" do
+      refute Tile.air_passable?(nil)
+    end
+  end
+
   describe "has_lumber?/1" do
     test "trees tile has lumber" do
       assert Tile.has_lumber?(Tile.new(:trees))

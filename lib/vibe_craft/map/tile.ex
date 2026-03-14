@@ -30,6 +30,15 @@ defmodule VibeCraft.Map.Tile do
   @spec passable?(t()) :: boolean()
   def passable?(%__MODULE__{type: type}), do: type == :grass
 
+  @doc "Returns `true` if naval units may travel on this tile."
+  @spec naval_passable?(t()) :: boolean()
+  def naval_passable?(%__MODULE__{type: type}), do: type == :water
+
+  @doc "Returns `true` if air units may fly over this tile (any non-nil tile is valid)."
+  @spec air_passable?(t() | nil) :: boolean()
+  def air_passable?(nil), do: false
+  def air_passable?(%__MODULE__{}), do: true
+
   @doc "Returns `true` if this tile holds harvestable lumber."
   @spec has_lumber?(t()) :: boolean()
   def has_lumber?(%__MODULE__{type: :trees}), do: true
