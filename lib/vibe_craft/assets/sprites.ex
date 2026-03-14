@@ -41,6 +41,8 @@ defmodule VibeCraft.Assets.Sprites do
 
   alias VibeCraft.Assets.Sprite
 
+  @dialyzer {:nowarn_function, [render_art: 3, char_to_rgba: 1]}
+
   # ── Cursor ────────────────────────────────────────────────────────────────
 
   @cursor_art ~S"""

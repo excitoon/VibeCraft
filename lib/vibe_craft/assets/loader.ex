@@ -15,7 +15,7 @@ defmodule VibeCraft.Assets.Loader do
   Returns `{:ok, %VibeCraft.Assets.Sprite{}}` or `{:error, reason}`.
   """
 
-  use Bitwise
+  import Bitwise
 
   alias VibeCraft.Assets.Sprite
 
@@ -67,10 +67,9 @@ defmodule VibeCraft.Assets.Loader do
 
   @spec decode_tga(binary()) :: {:ok, Sprite.t()} | {:error, term()}
   defp decode_tga(
-         <<id_len::8, _color_map_type::8, 2::8, _color_map_spec::40,
-           _x_origin::16-little, _y_origin::16-little,
-           width::16-little-unsigned, height::16-little-unsigned,
-           bpp::8, image_desc::8, rest::binary>>
+         <<id_len::8, _color_map_type::8, 2::8, _color_map_spec::40, _x_origin::16-little,
+           _y_origin::16-little, width::16-little-unsigned, height::16-little-unsigned, bpp::8,
+           image_desc::8, rest::binary>>
        ) do
     # Skip optional image-ID field.
     <<_id::binary-size(id_len), pixels::binary>> = rest

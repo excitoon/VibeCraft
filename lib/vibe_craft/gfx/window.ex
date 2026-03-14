@@ -9,6 +9,8 @@ defmodule VibeCraft.GFX.Window do
 
   alias VibeCraft.GFX.NIF
 
+  @dialyzer {:nowarn_function, [open: 3, poll_events: 1, swap_buffers: 1, close: 1]}
+
   @opaque t :: reference()
 
   @doc """

@@ -197,11 +197,12 @@ defmodule VibeCraft.Game do
 
     updated = AI.take_turn(ai_state)
 
-    %{game |
-      units: updated.units,
-      buildings: updated.buildings,
-      resources: updated.resources,
-      next_id: updated.next_id
+    %{
+      game
+      | units: updated.units,
+        buildings: updated.buildings,
+        resources: updated.resources,
+        next_id: updated.next_id
     }
   end
 

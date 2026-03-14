@@ -77,9 +77,7 @@ defmodule VibeCraft.AI do
     p2_barracks =
       buildings
       |> Map.values()
-      |> Enum.find(
-        &(&1.player == :player2 and &1.type == :barracks and Building.standing?(&1))
-      )
+      |> Enum.find(&(&1.player == :player2 and &1.type == :barracks and Building.standing?(&1)))
 
     case p2_barracks do
       nil ->
@@ -177,7 +175,7 @@ defmodule VibeCraft.AI do
       [{cx - 1, cy}, {cx + 1, cy}, {cx, cy - 1}, {cx, cy + 1}]
       |> Enum.filter(fn pos ->
         GameMap.in_bounds?(map, pos) and
-          (map |> GameMap.tile_at(pos) |> Tile.passable?())
+          map |> GameMap.tile_at(pos) |> Tile.passable?()
       end)
       |> Enum.min_by(fn {nc, nr} -> abs(nc - tx) + abs(nr - ty) end, fn -> nil end)
 

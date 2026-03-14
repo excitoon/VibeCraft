@@ -10,6 +10,20 @@ defmodule VibeCraft.GFX.NIF do
 
   @on_load :load_nif
 
+  @dialyzer {:nowarn_function,
+             [
+               load_nif: 0,
+               create_window: 3,
+               destroy_window: 1,
+               poll_events: 1,
+               swap_buffers: 1,
+               clear_screen: 1,
+               upload_texture: 4,
+               draw_sprite: 6,
+               delete_texture: 2,
+               err: 0
+             ]}
+
   @doc false
   def load_nif do
     nif_path = Application.app_dir(:vibe_craft, "priv/vibe_craft_nif")
@@ -85,6 +99,6 @@ defmodule VibeCraft.GFX.NIF do
   def delete_texture(_window_ref, _texture_id), do: err()
 
   defp err do
-    raise "VibeCraft NIF not loaded — run `mix compile` to build the native component"
+    :erlang.nif_error(:not_loaded)
   end
 end
