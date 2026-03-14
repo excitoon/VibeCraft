@@ -1,0 +1,9 @@
+%{
+  "bunt": {:hex, :bunt, "1.0.0", "de2d40d01ed50328a5e0df915aa43004edc1b18869f0d25978638a959f64472b", [:mix], [], "hexpm", "dc5f86aa08a5f6fa6b8096f0735c4e76d54ae5c9fa2c143e5a1fc7c1cd9bb6b5"},
+  "credo": {:hex, :credo, "1.7.17", "4635dc87458be885d703ef4ad05c0339a837cbff06074a14bdb6509436624759", [:mix], [{:bunt, "~> 0.2.1 or ~> 1.0", [hex: :bunt, repo: "hexpm", optional: false]}, {:file_system, "~> 0.2 or ~> 1.0", [hex: :file_system, repo: "hexpm", optional: false]}, {:jason, "~> 1.0", [hex: :jason, repo: "hexpm", optional: false]}], "hexpm", "1eb5645c835f0b6c9b5410f94b5a185057bcf6d62a9c2b476da971cde8749645"},
+  "dialyxir": {:hex, :dialyxir, "1.4.7", "c8f16d15d566ccc854202b7f6ed461ad33fad4c00e3ff83687d20fbac3482cb1", [:mix], [{:erlex, ">= 0.2.8", [hex: :erlex, repo: "hexpm", optional: false]}], "hexpm", "b34527202e6eb8cee198efec110996c25c5898f43a4094df157f8d28f27d9efe"},
+  "elixir_make": {:hex, :elixir_make, "0.9.0", "aaf06161bdade8fe6719728cf26ef07586de689560b7d09606624e3c7091c531", [:mix], [], "hexpm", "db23d4fd8b757462ad02f8aa73431a426fe6671c80b200d9710caf3d1dd0ffdb"},
+  "erlex": {:hex, :erlex, "0.2.8", "d654b22b3702d13f33b51dc140fa08afd335d16af6133a00bc385116260cbf8a", [:mix], [], "hexpm", "9d66ff9fedf69e49dc3fd12831e12a8a37b76f8651dd21cd45fcf5561a8a7590"},
+  "file_system": {:hex, :file_system, "1.1.1", "52811a390f7894dd6a786682fb1c96a50c78c9dd0da57c4327be40016c8a8cef", [:mix], [], "hexpm", "7a15ff97dfe526aeefb090a7a9d3d03aa907e100e262a0f8f7746b78f8f87a5d"},
+  "jason": {:hex, :jason, "1.4.4", "ea1b33ba632860cfd28cbf2a13a23a82ea874443dc8a63292d887a63a2ded4d0", [:mix], [{:decimal, "~> 1.0 or ~> 2.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm", "c5eb0cab91f094599f94d55bc63409236a8ec69a21a67814529e8d5f6cc90b3b"},
+}

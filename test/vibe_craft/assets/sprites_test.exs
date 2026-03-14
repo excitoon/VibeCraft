@@ -101,4 +101,3 @@ defmodule VibeCraft.Assets.SpritesTest do
     end
   end
 end
-

@@ -36,13 +36,13 @@ Goal: a playable single-player skirmish with Version I rules.
 
 Goal: extend Version I with naval and air units plus a campaign framework.
 
-- [ ] Naval units and sea-lane pathfinding
-- [ ] Air units and altitude layer
-- [ ] Spell / ability system (mana-based)
-- [ ] Hero units with experience and leveling
-- [ ] Campaign mission scripting DSL (Elixir macros)
-- [ ] Multiplayer lobby over TCP (BEAM distribution or raw sockets)
-- [ ] Expanded original art set
+- [x] Naval units and sea-lane pathfinding
+- [x] Air units and altitude layer
+- [x] Spell / ability system (mana-based)
+- [x] Hero units with experience and leveling
+- [x] Campaign mission scripting DSL (Elixir macros)
+- [x] Multiplayer lobby over TCP (BEAM distribution or raw sockets)
+- [x] Expanded original art set
 
 ### Phase 3 — Version III Experience (primary target)
 

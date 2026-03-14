@@ -12,6 +12,8 @@ defmodule VibeCraft.Demo do
   alias VibeCraft.Assets.Sprites
   alias VibeCraft.GFX.{Renderer, Window}
 
+  @dialyzer {:nowarn_function, [run: 0, loop: 3]}
+
   @window_title "VibeCraft"
   @window_width 800
   @window_height 600
