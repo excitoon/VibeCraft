@@ -22,7 +22,6 @@ defmodule VibeCraft.GFX.NIF do
                draw_sprite: 6,
                delete_texture: 2
              ]}
-
   @doc false
   def load_nif do
     nif_path = Application.app_dir(:vibe_craft, "priv/vibe_craft_nif")
