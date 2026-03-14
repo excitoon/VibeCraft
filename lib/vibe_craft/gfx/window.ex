@@ -11,6 +11,8 @@ defmodule VibeCraft.GFX.Window do
 
   @opaque t :: reference()
 
+  @dialyzer {:nowarn_function, [open: 3, poll_events: 1, swap_buffers: 1, close: 1]}
+
   @doc """
   Open a new window with the given title, width, and height in pixels.
 

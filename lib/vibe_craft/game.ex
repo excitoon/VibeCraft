@@ -17,6 +17,7 @@ defmodule VibeCraft.Game do
 
   alias VibeCraft.{AI, Building, Hero, Resources, Unit}
   alias VibeCraft.Map.Map, as: GameMap
+  alias VibeCraft.Map.Tile
 
   @type player :: Unit.player()
   @type status :: :ongoing | {:victory, player()} | :draw
@@ -174,7 +175,7 @@ defmodule VibeCraft.Game do
     |> GameMap.adjacent(building_pos)
     |> Enum.find(fn pos ->
       tile = GameMap.tile_at(map, pos)
-      not is_nil(tile) and VibeCraft.Map.Tile.passable?(tile) and pos not in occupied
+      not is_nil(tile) and Tile.passable?(tile) and pos not in occupied
     end)
   end
 

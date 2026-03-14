@@ -54,16 +54,18 @@ defmodule VibeCraft.Map.Loader do
         row_width = rows |> List.first() |> String.length()
 
         if Enum.all?(rows, fn row -> String.length(row) == row_width end) do
-          rows
-          |> Enum.map(&parse_row/1)
-          |> collect_results()
-          |> case do
-            {:ok, tile_rows} -> {:ok, Map.new(tile_rows)}
-            error -> error
-          end
+          build_map(rows)
         else
           {:error, :inconsistent_row_widths}
         end
+    end
+  end
+
+  @spec build_map([String.t()]) :: {:ok, Map.t()} | {:error, term()}
+  defp build_map(rows) do
+    case rows |> Enum.map(&parse_row/1) |> collect_results() do
+      {:ok, tile_rows} -> {:ok, Map.new(tile_rows)}
+      error -> error
     end
   end
 

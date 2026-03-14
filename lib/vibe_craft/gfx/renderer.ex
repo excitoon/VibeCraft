@@ -15,6 +15,8 @@ defmodule VibeCraft.GFX.Renderer do
   alias VibeCraft.Assets.Sprite
   alias VibeCraft.GFX.{NIF, Window}
 
+  @dialyzer {:nowarn_function, [clear: 1, load_sprite: 2, draw_sprite: 5, unload_sprite: 2]}
+
   @doc """
   Clear the screen to black.  Call at the start of each frame.
   """
