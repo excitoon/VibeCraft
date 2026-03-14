@@ -13,27 +13,30 @@ VibeCraft features two factions, each with their own units and buildings.
 The Human Alliance relies on disciplined soldiers and industrious peasants.  Workers gather
 resources and construct buildings; fighters hold the line in melee combat.
 
-| Unit       | Role    | Produced by  |
-|------------|---------|--------------|
-| `:peasant` | Worker  | `:town_hall` |
-| `:footman` | Fighter | `:barracks`  |
+| Unit        | Role        | Produced by  |
+|-------------|-------------|--------------|
+| `:peasant`  | Worker      | `:town_hall` |
+| `:footman`  | Fighter     | `:barracks`  |
+| `:gryphon`  | Air fighter | *(Phase 2)*  |
 
 ### Orc Horde
 
 The Orc Horde fields savage grunts backed by hard-working peons.  Grunt attacks deal more
 damage than their Human counterparts, giving the Horde an aggressive edge.
 
-| Unit    | Role    | Produced by  |
-|---------|---------|--------------|
-| `:peon` | Worker  | `:town_hall` |
-| `:grunt`| Fighter | `:barracks`  |
+| Unit     | Role        | Produced by  |
+|----------|-------------|--------------|
+| `:peon`  | Worker      | `:town_hall` |
+| `:grunt` | Fighter     | `:barracks`  |
+| `:dragon`| Air fighter | *(Phase 2)*  |
 
 ---
 
 ## Units
 
 All units occupy a single tile and move one tile per tick in a cardinal direction.
-Ground units can melee-attack any enemy unit on an adjacent tile.
+Units belong to one of three layers — **ground**, **naval**, or **air** — each with
+their own movement rules.
 
 ### Ground units
 
@@ -43,6 +46,28 @@ Ground units can melee-attack any enemy unit on an adjacent tile.
 | `:footman` | Human  | Fighter | 60 | 6      | 4     | 135  | 0      | 60            |
 | `:peon`    | Orc    | Worker  | 30 | 3      | 4     | 75   | 0      | 45            |
 | `:grunt`   | Orc    | Fighter | 60 | 8      | 4     | 100  | 0      | 60            |
+
+### Naval units *(Phase 2)*
+
+Naval units move on water tiles and cannot traverse land.
+
+| Type           | Role            | HP  | Attack | Sight |
+|----------------|-----------------|-----|--------|-------|
+| `:destroyer`   | Naval fighter   | 100 | 10     | 5     |
+| `:battleship`  | Heavy naval gun | 150 | 15     | 6     |
+| `:oil_tanker`  | Naval worker    | 60  | 0      | 4     |
+| `:transport`   | Troop transport | 80  | 0      | 4     |
+
+### Air units *(Phase 2)*
+
+Air units fly over any terrain and cannot be blocked by ground or naval obstacles.
+
+| Type        | Race  | Role           | HP  | Attack | Sight |
+|-------------|-------|----------------|-----|--------|-------|
+| `:gryphon`  | Human | Air fighter    | 80  | 12     | 6     |
+| `:dragon`   | Orc   | Air fighter    | 120 | 16     | 6     |
+
+### Stat glossary
 
 **HP** — hit points at full health.  
 **Attack** — melee damage dealt per strike.  
