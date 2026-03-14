@@ -9,7 +9,7 @@
 ### Intellectual Property
 
 - VibeCraft uses its own original IP, including all graphics and animations. Do not use or reference assets from any third-party proprietary titles.
-- Do not reference any protected trademarks of other companies in the codebase, documentation, or communications.
+- Do not reference any protected trademarks of other companies in the codebase, documentation, or communications. In particular, never mention "WarCraft" — it is a protected trademark.
 
 ### Game Design
 
