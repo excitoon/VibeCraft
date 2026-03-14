@@ -103,7 +103,13 @@ defmodule VibeCraft.AI do
 
   # ── Combat movement ───────────────────────────────────────────────────────
 
-  @spec enqueue_grunt(Building.t(), Resources.t(), non_neg_integer(), non_neg_integer(), game_state()) ::
+  @spec enqueue_grunt(
+          Building.t(),
+          Resources.t(),
+          non_neg_integer(),
+          non_neg_integer(),
+          game_state()
+        ) ::
           game_state()
   defp enqueue_grunt(barracks, p2_res, gold_cost, lumber_cost, state) do
     with {:ok, updated_barracks} <- Building.enqueue_training(barracks, :grunt),
