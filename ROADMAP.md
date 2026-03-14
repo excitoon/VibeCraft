@@ -48,13 +48,13 @@ Goal: extend Version I with naval and air units plus a campaign framework.
 
 Goal: full feature parity with a modern RTS/RPG hybrid.
 
-- [ ] 3-D terrain rendering (height maps, normal mapping)
-- [ ] Day/night cycle and dynamic lighting
-- [ ] RPG elements: inventory, loot, shops, item crafting
-- [ ] Custom map / scenario editor
-- [ ] Replay recording and playback
-- [ ] Ranked matchmaking and ladder
-- [ ] Full original soundtrack and voice-over stubs
+- [x] 3-D terrain rendering (height maps, normal mapping)
+- [x] Day/night cycle and dynamic lighting
+- [x] RPG elements: inventory, loot, shops, item crafting
+- [x] Custom map / scenario editor
+- [x] Replay recording and playback
+- [x] Ranked matchmaking and ladder
+- [x] Full original soundtrack and voice-over stubs
 
 ### Phase 4 — Polish and Release
 
