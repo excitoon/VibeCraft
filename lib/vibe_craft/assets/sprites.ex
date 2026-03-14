@@ -5,6 +5,10 @@ defmodule VibeCraft.Assets.Sprites do
   These serve as functional defaults and as living examples for the asset
   pipeline.  All pixel art here is original IP.
 
+  The canonical source artwork for every terrain tile is an SVG file stored in
+  `priv/art/` (e.g. `priv/art/terrain_grass.svg`).  The ASCII grids below were
+  derived from those SVGs and must be kept in sync with them.
+
   ## Pixel-art character palette (used across all sprites)
 
   | Char | Color                    | RGBA              |
@@ -93,7 +97,7 @@ defmodule VibeCraft.Assets.Sprites do
   @doc """
   A 16×16 grass terrain tile.
 
-  Used as the base passable ground surface.
+  Used as the base passable ground surface.  SVG source: `priv/art/terrain_grass.svg`.
   """
   @spec terrain_grass() :: Sprite.t()
   def terrain_grass do
@@ -122,7 +126,7 @@ defmodule VibeCraft.Assets.Sprites do
   @doc """
   A 16×16 water terrain tile.
 
-  Impassable for ground units.
+  Impassable for ground units.  SVG source: `priv/art/terrain_water.svg`.
   """
   @spec terrain_water() :: Sprite.t()
   def terrain_water do
@@ -152,10 +156,40 @@ defmodule VibeCraft.Assets.Sprites do
   A 16×16 trees terrain tile.
 
   Impassable; worker units can harvest lumber from adjacent tree tiles.
+  SVG source: `priv/art/terrain_trees.svg`.
   """
   @spec terrain_trees() :: Sprite.t()
   def terrain_trees do
     render_art(@terrain_trees_art, 16, 16)
+  end
+
+  @terrain_rock_art ~S"""
+  RRrRRrRRRrRRRrRR
+  RrRRRRrRRrRRRRrR
+  rRRRrRRRrRRrRRRR
+  RRRrRRrRRRRrRRrR
+  RrRRRRRrRRRRRrRR
+  RRrRRrRRrRRRRRrR
+  rRRRrRRRRrRRrRRR
+  RRRRRrRRrRRRrRRR
+  RrRRrRRrRRrRRRRr
+  RRRRrRRRrRRRrRRR
+  rRRRRrRRRrRRRRRr
+  RRrRRRrRRrRRrRRR
+  RRRrRRrRRRrRRRrR
+  rRRRRRrRRrRRRRRr
+  RRrRRrRRRrRRrRRR
+  RRRrRRRrRRRrRRRR
+  """
+
+  @doc """
+  A 16×16 rock terrain tile.
+
+  Impassable rocky ground.  SVG source: `priv/art/terrain_rock.svg`.
+  """
+  @spec terrain_rock() :: Sprite.t()
+  def terrain_rock do
+    render_art(@terrain_rock_art, 16, 16)
   end
 
   @terrain_gold_mine_art ~S"""
@@ -181,6 +215,7 @@ defmodule VibeCraft.Assets.Sprites do
   A 16×16 gold mine terrain tile.
 
   Impassable; worker units can harvest gold from adjacent gold mine tiles.
+  SVG source: `priv/art/terrain_gold_mine.svg`.
   """
   @spec terrain_gold_mine() :: Sprite.t()
   def terrain_gold_mine do
