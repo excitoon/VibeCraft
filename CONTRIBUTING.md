@@ -26,4 +26,4 @@
 
 ### License
 
-- VibeCraft is distributed under the [MIT License](LICENSE).
+- VibeCraft is distributed under the [MIT License](LICENSE.md).

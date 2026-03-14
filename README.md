@@ -12,4 +12,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for project guidelines.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE.md)
