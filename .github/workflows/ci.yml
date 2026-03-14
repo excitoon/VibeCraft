@@ -35,7 +35,6 @@ jobs:
           restore-keys: ${{ runner.os }}-mix-
 
       - name: Install Mix dependencies
-        if: steps.mix-cache.outputs.cache-hit != 'true'
         run: mix deps.get
 
       - name: Check code formatting
@@ -84,7 +83,6 @@ jobs:
           restore-keys: ${{ runner.os }}-mix-otp${{ matrix.otp }}-elixir${{ matrix.elixir }}-
 
       - name: Install Mix dependencies
-        if: steps.mix-cache.outputs.cache-hit != 'true'
         run: mix deps.get
 
       - name: Compile (including NIF)
@@ -121,7 +119,6 @@ jobs:
           restore-keys: ${{ runner.os }}-mix-
 
       - name: Install Mix dependencies
-        if: steps.mix-cache.outputs.cache-hit != 'true'
         run: mix deps.get
 
       - name: Restore PLT cache
