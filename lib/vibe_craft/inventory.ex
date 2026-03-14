@@ -1,336 +1,186 @@
 defmodule VibeCraft.Inventory do
-  @default_capacity 6
-
   @moduledoc """
-  RPG inventory system for Phase 3.
+  RPG inventory, loot drops, shop purchases, and item crafting for Phase 3.
 
-  Manages item definitions, hero item slots, loot generation, the in-game
-  shop, and item-crafting recipes.
+  An `Inventory` tracks a hero's carried items by type and quantity.  The
+  total number of distinct item stacks is bounded by `capacity`.
 
-  ## Item categories
+  ## Item types
 
-  | Category      | Examples                                   |
-  |---------------|--------------------------------------------|
-  | `:weapon`     | Sword of Flames, Frost Axe, Elven Bow      |
-  | `:armour`      | Plate Armour, Leather Vest, Tower Shield   |
-  | `:consumable` | Health Potion, Mana Potion, Elixir of Speed|
-  | `:artifact`   | Ring of Strength, Amulet of Wisdom         |
+  | Type                | Category   | Shop price  |
+  |---------------------|------------|-------------|
+  | `:health_potion`    | consumable | 50 gold     |
+  | `:mana_potion`      | consumable | 75 gold     |
+  | `:sword_of_light`   | equipment  | 400 gold    |
+  | `:shield_of_iron`   | equipment  | 300 gold    |
+  | `:ring_of_power`    | equipment  | craft only  |
+  | `:elixir_of_speed`  | consumable | 125 gold    |
 
-  ## Item stats
+  ## Crafting recipes
 
-  Each item carries four optional stat bonuses:
-
-  - `attack_bonus` — added to the bearer's attack rating.
-  - `armour_bonus`  — added to the bearer's armour rating.
-  - `hp_bonus`     — added to the bearer's maximum HP when equipped.
-  - `mana_bonus`   — added to the bearer's maximum mana when equipped.
-
-  ## Capacity
-
-  Every hero inventory has a fixed `capacity` (default #{@default_capacity}
-  slots).  Adding an item beyond that limit returns
-  `{:error, :inventory_full}`.
-
-  ## Loot
-
-  `generate_loot/1` accepts an enemy category atom (`:grunt`, `:footman`,
-  `:destroyer`, `:dragon`, `:death_knight`, `:paladin`) and returns the list
-  of items that enemy type typically drops.
-
-  ## Shop
-
-  `shop_catalog/0` returns all items available for purchase.  `buy_item/3`
-  deducts the gold cost from a `VibeCraft.Resources` struct and adds the
-  item to an inventory.
-
-  ## Crafting
-
-  `craft/2` accepts two item ids and returns `{:ok, crafted_item}` when a
-  valid recipe exists, or `{:error, :invalid_recipe}` otherwise.
-
-  ## Usage
-
-      iex> inv = Inventory.new()
-      iex> {:ok, inv} = Inventory.add_item(inv, :health_potion)
-      iex> Inventory.item_count(inv)
-      1
+  | Output            | Ingredients                             |
+  |-------------------|-----------------------------------------|
+  | `:ring_of_power`  | `:sword_of_light` + `:shield_of_iron`   |
   """
 
-  alias VibeCraft.Resources
-
-  @type item_category :: :weapon | :armour | :consumable | :artifact
-
-  @type item :: %{
-          id: atom(),
-          name: String.t(),
-          category: item_category(),
-          cost: non_neg_integer(),
-          attack_bonus: integer(),
-          armour_bonus: integer(),
-          hp_bonus: integer(),
-          mana_bonus: integer()
-        }
+  @type item_type ::
+          :health_potion
+          | :mana_potion
+          | :sword_of_light
+          | :shield_of_iron
+          | :ring_of_power
+          | :elixir_of_speed
 
   @type t :: %__MODULE__{
-          items: [item()],
+          items: %{item_type() => non_neg_integer()},
+          gold: non_neg_integer(),
           capacity: pos_integer()
         }
 
-  @enforce_keys [:items, :capacity]
-  defstruct [:items, :capacity]
+  @enforce_keys [:capacity]
+  defstruct [:capacity, items: %{}, gold: 0]
 
-  # ── Item catalogue ──────────────────────────────────────────────────────
-
-  @catalogue %{
-    # ── Weapons ──────────────────────────────────────────────────────────
-    sword_of_flames: %{
-      name: "Sword of Flames",
-      category: :weapon,
-      cost: 500,
-      attack_bonus: 6,
-      armour_bonus: 0,
-      hp_bonus: 0,
-      mana_bonus: 0
-    },
-    frost_axe: %{
-      name: "Frost Axe",
-      category: :weapon,
-      cost: 450,
-      attack_bonus: 5,
-      armour_bonus: 0,
-      hp_bonus: 0,
-      mana_bonus: 0
-    },
-    elven_bow: %{
-      name: "Elven Bow",
-      category: :weapon,
-      cost: 400,
-      attack_bonus: 7,
-      armour_bonus: 0,
-      hp_bonus: 0,
-      mana_bonus: 0
-    },
-    shadow_dagger: %{
-      name: "Shadow Dagger",
-      category: :weapon,
-      cost: 350,
-      attack_bonus: 4,
-      armour_bonus: 0,
-      hp_bonus: 0,
-      mana_bonus: 0
-    },
-    # ── Armour ───────────────────────────────────────────────────────────
-    plate_armour: %{
-      name: "Plate Armour",
-      category: :armour,
-      cost: 600,
-      attack_bonus: 0,
-      armour_bonus: 8,
-      hp_bonus: 50,
-      mana_bonus: 0
-    },
-    tower_shield: %{
-      name: "Tower Shield",
-      category: :armour,
-      cost: 550,
-      attack_bonus: 0,
-      armour_bonus: 6,
-      hp_bonus: 25,
-      mana_bonus: 0
-    },
-    leather_vest: %{
-      name: "Leather Vest",
-      category: :armour,
-      cost: 250,
-      attack_bonus: 0,
-      armour_bonus: 3,
-      hp_bonus: 15,
-      mana_bonus: 0
-    },
-    # ── Consumables ──────────────────────────────────────────────────────
-    health_potion: %{
-      name: "Health Potion",
-      category: :consumable,
-      cost: 150,
-      attack_bonus: 0,
-      armour_bonus: 0,
-      hp_bonus: 200,
-      mana_bonus: 0
-    },
-    mana_potion: %{
-      name: "Mana Potion",
-      category: :consumable,
-      cost: 150,
-      attack_bonus: 0,
-      armour_bonus: 0,
-      hp_bonus: 0,
-      mana_bonus: 150
-    },
-    elixir_of_fortitude: %{
-      name: "Elixir of Fortitude",
-      category: :consumable,
-      cost: 300,
-      attack_bonus: 0,
-      armour_bonus: 0,
-      hp_bonus: 500,
-      mana_bonus: 0
-    },
-    # ── Artifacts ────────────────────────────────────────────────────────
-    ring_of_strength: %{
-      name: "Ring of Strength",
-      category: :artifact,
-      cost: 700,
-      attack_bonus: 5,
-      armour_bonus: 2,
-      hp_bonus: 75,
-      mana_bonus: 0
-    },
-    amulet_of_wisdom: %{
-      name: "Amulet of Wisdom",
-      category: :artifact,
-      cost: 700,
-      attack_bonus: 0,
-      armour_bonus: 0,
-      hp_bonus: 0,
-      mana_bonus: 200
-    },
-    boots_of_speed: %{
-      name: "Boots of Speed",
-      category: :artifact,
-      cost: 500,
-      attack_bonus: 0,
-      armour_bonus: 1,
-      hp_bonus: 25,
-      mana_bonus: 25
-    }
+  @shop_prices %{
+    health_potion: 50,
+    mana_potion: 75,
+    sword_of_light: 400,
+    shield_of_iron: 300,
+    elixir_of_speed: 125
   }
 
-  # ── Loot tables ─────────────────────────────────────────────────────────
-
-  @loot_tables %{
-    grunt: [:health_potion, :leather_vest],
-    footman: [:health_potion, :shadow_dagger],
-    destroyer: [:frost_axe, :tower_shield],
-    dragon: [:sword_of_flames, :ring_of_strength],
-    death_knight: [:amulet_of_wisdom, :mana_potion, :frost_axe],
-    paladin: [:ring_of_strength, :elixir_of_fortitude, :plate_armour]
-  }
-
-  # ── Crafting recipes ────────────────────────────────────────────────────
-
-  # Each recipe: {ingredient_1, ingredient_2} => result_item_id
   @recipes %{
-    {:health_potion, :mana_potion} => :elixir_of_fortitude,
-    {:sword_of_flames, :ring_of_strength} => :amulet_of_wisdom,
-    {:frost_axe, :leather_vest} => :plate_armour,
-    {:tower_shield, :shadow_dagger} => :boots_of_speed
+    ring_of_power: [:sword_of_light, :shield_of_iron]
   }
 
-  # ── Public API ──────────────────────────────────────────────────────────
+  @loot_table [
+    :health_potion,
+    :health_potion,
+    :mana_potion,
+    :elixir_of_speed,
+    :sword_of_light,
+    :shield_of_iron
+  ]
 
-  @doc "Create a new empty inventory with the default #{@default_capacity}-slot capacity."
-  @spec new() :: t()
-  def new, do: %__MODULE__{items: [], capacity: @default_capacity}
-
-  @doc "Return the number of items currently in `inventory`."
-  @spec item_count(t()) :: non_neg_integer()
-  def item_count(%__MODULE__{items: items}), do: length(items)
-
-  @doc """
-  Return the item definition for `item_id`.
-
-  Raises `KeyError` when `item_id` is not in the catalogue.
-  """
-  @spec get_item(atom()) :: item()
-  def get_item(item_id) do
-    attrs = Map.fetch!(@catalogue, item_id)
-    Map.put(attrs, :id, item_id)
+  @doc "Create a new empty inventory with the given item `capacity` (default: 6)."
+  @spec new(pos_integer()) :: t()
+  def new(capacity \\ 6) do
+    %__MODULE__{capacity: capacity, items: %{}, gold: 0}
   end
 
-  @doc """
-  Add `item_id` to `inventory`.
-
-  Returns `{:ok, updated_inventory}` on success, or
-  `{:error, :inventory_full}` when the inventory is at capacity.
-  """
-  @spec add_item(t(), atom()) :: {:ok, t()} | {:error, :inventory_full}
-  def add_item(%__MODULE__{items: items, capacity: cap} = inv, item_id)
-      when length(items) < cap do
-    item = get_item(item_id)
-    {:ok, %{inv | items: items ++ [item]}}
+  @doc "Return the quantity of `item_type` in the inventory (0 when absent)."
+  @spec quantity(t(), item_type()) :: non_neg_integer()
+  def quantity(%__MODULE__{items: items}, item_type) do
+    Map.get(items, item_type, 0)
   end
 
-  def add_item(%__MODULE__{}, _item_id), do: {:error, :inventory_full}
+  @doc "Return the number of distinct item stacks currently held."
+  @spec size(t()) :: non_neg_integer()
+  def size(%__MODULE__{items: items}), do: map_size(items)
 
   @doc """
-  Remove the first occurrence of `item_id` from `inventory`.
+  Add `qty` units of `item_type` to the inventory.
 
-  Returns `{:ok, updated_inventory, removed_item}` on success, or
-  `{:error, :item_not_found}` when the inventory does not contain the item.
+  Returns `{:error, :inventory_full}` when adding a new item type would
+  exceed `capacity`.
   """
-  @spec remove_item(t(), atom()) :: {:ok, t(), item()} | {:error, :item_not_found}
-  def remove_item(%__MODULE__{items: items} = inv, item_id) do
-    case Enum.split_while(items, &(&1.id != item_id)) do
-      {_before, []} ->
-        {:error, :item_not_found}
-
-      {before, [removed | rest]} ->
-        {:ok, %{inv | items: before ++ rest}, removed}
+  @spec add_item(t(), item_type(), pos_integer()) :: {:ok, t()} | {:error, :inventory_full}
+  def add_item(%__MODULE__{items: items, capacity: cap} = inv, item_type, qty \\ 1) do
+    if Map.has_key?(items, item_type) or map_size(items) < cap do
+      new_qty = Map.get(items, item_type, 0) + qty
+      {:ok, %{inv | items: Map.put(items, item_type, new_qty)}}
+    else
+      {:error, :inventory_full}
     end
   end
 
   @doc """
-  Return the list of items dropped by an enemy of `enemy_type`.
+  Remove `qty` units of `item_type` from the inventory.
 
-  Returns an empty list for unrecognised enemy types.
+  Returns `{:error, :insufficient_items}` when fewer than `qty` are held.
   """
-  @spec generate_loot(atom()) :: [item()]
-  def generate_loot(enemy_type) do
-    item_ids = Map.get(@loot_tables, enemy_type, [])
-    Enum.map(item_ids, &get_item/1)
+  @spec remove_item(t(), item_type(), pos_integer()) ::
+          {:ok, t()} | {:error, :insufficient_items}
+  def remove_item(%__MODULE__{items: items} = inv, item_type, qty \\ 1) do
+    current = Map.get(items, item_type, 0)
+
+    if current >= qty do
+      new_items = update_or_delete(items, item_type, current - qty)
+      {:ok, %{inv | items: new_items}}
+    else
+      {:error, :insufficient_items}
+    end
   end
 
-  @doc "Return all items available for purchase in the shop."
-  @spec shop_catalog() :: [item()]
-  def shop_catalog do
-    Enum.map(@catalogue, fn {id, attrs} -> Map.put(attrs, :id, id) end)
-  end
+  @doc "Add `amount` gold to the inventory."
+  @spec add_gold(t(), non_neg_integer()) :: t()
+  def add_gold(%__MODULE__{gold: g} = inv, amount), do: %{inv | gold: g + amount}
 
   @doc """
-  Purchase `item_id` from the shop.
+  Buy one unit of `item_type` from the shop, spending gold.
 
-  Deducts the item's gold cost from `resources` and adds the item to
-  `inventory`.
-
-  Returns `{:ok, updated_resources, updated_inventory}` on success.
-  Returns `{:error, :insufficient_resources}` when the player cannot afford
-  the item, or `{:error, :inventory_full}` when the inventory is at capacity.
+  Errors:
+  - `{:error, :unknown_item}` — item is not sold in the shop.
+  - `{:error, :insufficient_gold}` — not enough gold.
+  - `{:error, :inventory_full}` — no free slot for the new item.
   """
-  @spec buy_item(Resources.t(), t(), atom()) ::
-          {:ok, Resources.t(), t()} | {:error, :insufficient_resources | :inventory_full}
-  def buy_item(%Resources{} = resources, %__MODULE__{} = inventory, item_id) do
-    item = get_item(item_id)
-
-    with {:ok, updated_resources} <- Resources.spend(resources, item.cost, 0),
-         {:ok, updated_inventory} <- add_item(inventory, item_id) do
-      {:ok, updated_resources, updated_inventory}
+  @spec buy_from_shop(t(), item_type()) ::
+          {:ok, t()} | {:error, :insufficient_gold | :inventory_full | :unknown_item}
+  def buy_from_shop(%__MODULE__{gold: gold} = inv, item_type) do
+    case Map.get(@shop_prices, item_type) do
+      nil -> {:error, :unknown_item}
+      price when gold < price -> {:error, :insufficient_gold}
+      price -> add_item(%{inv | gold: gold - price}, item_type)
     end
   end
 
   @doc """
-  Combine `item_id_a` and `item_id_b` using a crafting recipe.
+  Craft `output_type` from its required ingredients.
 
-  Returns `{:ok, crafted_item}` when a recipe exists for the pair (in either
-  order), or `{:error, :invalid_recipe}` otherwise.
+  Each required ingredient is consumed (quantity 1).  Errors:
+  - `{:error, :unknown_recipe}` — no recipe exists for `output_type`.
+  - `{:error, :missing_ingredients}` — inventory lacks a required component.
+  - `{:error, :inventory_full}` — no room for the crafted item.
   """
-  @spec craft(atom(), atom()) :: {:ok, item()} | {:error, :invalid_recipe}
-  def craft(item_id_a, item_id_b) do
-    key_ab = {item_id_a, item_id_b}
-    key_ba = {item_id_b, item_id_a}
-
-    case Map.get(@recipes, key_ab) || Map.get(@recipes, key_ba) do
-      nil -> {:error, :invalid_recipe}
-      result_id -> {:ok, get_item(result_id)}
+  @spec craft_item(t(), item_type()) ::
+          {:ok, t()} | {:error, :missing_ingredients | :unknown_recipe | :inventory_full}
+  def craft_item(inv, output_type) do
+    case Map.get(@recipes, output_type) do
+      nil -> {:error, :unknown_recipe}
+      ingredients -> craft_from_ingredients(inv, ingredients, output_type)
     end
   end
+
+  @doc """
+  Return a random loot item dropped by a defeated enemy.
+
+  The returned atom can be passed directly to `add_item/3`.
+  """
+  @spec loot_drop() :: item_type()
+  def loot_drop, do: Enum.random(@loot_table)
+
+  # ── Private helpers ─────────────────────────────────────────────────────
+
+  @spec craft_from_ingredients(t(), [item_type()], item_type()) ::
+          {:ok, t()} | {:error, :missing_ingredients | :inventory_full}
+  defp craft_from_ingredients(inv, ingredients, output_type) do
+    with {:ok, consumed} <- consume_ingredients(inv, ingredients) do
+      add_item(consumed, output_type)
+    end
+  end
+
+  @spec consume_ingredients(t(), [item_type()]) ::
+          {:ok, t()} | {:error, :missing_ingredients}
+  defp consume_ingredients(inv, ingredients) do
+    Enum.reduce_while(ingredients, {:ok, inv}, fn item, {:ok, acc} ->
+      case remove_item(acc, item) do
+        {:ok, updated} -> {:cont, {:ok, updated}}
+        {:error, :insufficient_items} -> {:halt, {:error, :missing_ingredients}}
+      end
+    end)
+  end
+
+  @spec update_or_delete(%{item_type() => non_neg_integer()}, item_type(), non_neg_integer()) ::
+          %{item_type() => non_neg_integer()}
+  defp update_or_delete(items, key, 0), do: Map.delete(items, key)
+  defp update_or_delete(items, key, qty), do: Map.put(items, key, qty)
 end
