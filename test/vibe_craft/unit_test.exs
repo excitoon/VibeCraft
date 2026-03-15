@@ -304,4 +304,28 @@ defmodule VibeCraft.UnitTest do
       assert updated.xp == 150
     end
   end
+
+  describe "orc_caste/1" do
+    test "grunt belongs to the warrior caste" do
+      assert Unit.orc_caste(:grunt) == :warrior
+    end
+
+    test "dragon belongs to the warrior caste" do
+      assert Unit.orc_caste(:dragon) == :warrior
+    end
+
+    test "peon belongs to the worker caste" do
+      assert Unit.orc_caste(:peon) == :worker
+    end
+
+    test "death_knight belongs to the warlock caste" do
+      assert Unit.orc_caste(:death_knight) == :warlock
+    end
+
+    test "human and neutral units return nil" do
+      for type <- [:footman, :peasant, :paladin, :gryphon, :destroyer, :battleship] do
+        assert Unit.orc_caste(type) == nil
+      end
+    end
+  end
 end

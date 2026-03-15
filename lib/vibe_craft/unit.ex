@@ -37,12 +37,23 @@ defmodule VibeCraft.Unit do
   |-----------------|------------------|-----|--------|------|
   | `:paladin`      | Human hero       | 150 | 12     | 200  |
   | `:death_knight` | Orc hero         | 150 | 15     | 200  |
+
+  ## Orc castes
+
+  Orc units belong to social castes accessible via `orc_caste/1`.
+
+  | Caste      | Unit types              |
+  |------------|-------------------------|
+  | `:warrior` | `:grunt`, `:dragon`     |
+  | `:worker`  | `:peon`                 |
+  | `:warlock` | `:death_knight`         |
   """
 
   alias VibeCraft.Map.{Map, Tile}
 
   @type player :: :player1 | :player2
   @type layer :: :ground | :naval | :air
+  @type orc_caste :: :warrior | :worker | :warlock
   @type unit_type ::
           :footman
           | :peasant
@@ -233,6 +244,23 @@ defmodule VibeCraft.Unit do
   """
   @spec add_xp(t(), non_neg_integer()) :: t()
   def add_xp(%__MODULE__{xp: xp} = unit, xp_gained), do: %{unit | xp: xp + xp_gained}
+
+  @doc """
+  Return the orc caste for an orc `unit_type`, or `nil` for non-orc types.
+
+  ## Orc castes
+
+  | Caste      | Unit types              |
+  |------------|-------------------------|
+  | `:warrior` | `:grunt`, `:dragon`     |
+  | `:worker`  | `:peon`                 |
+  | `:warlock` | `:death_knight`         |
+  """
+  @spec orc_caste(unit_type()) :: orc_caste() | nil
+  def orc_caste(type) when type in [:grunt, :dragon], do: :warrior
+  def orc_caste(:peon), do: :worker
+  def orc_caste(:death_knight), do: :warlock
+  def orc_caste(_type), do: nil
 
   @spec passable_for_layer?(Tile.t() | nil, layer()) :: boolean()
   defp passable_for_layer?(nil, _layer), do: false
