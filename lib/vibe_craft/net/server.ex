@@ -27,6 +27,8 @@ defmodule VibeCraft.Net.Server do
 
   @default_port 4001
 
+  @dialyzer {:nowarn_function, [init_server: 1]}
+
   # ── Client API ─────────────────────────────────────────────────────────────
 
   @doc "Start the server, optionally linked to the caller."

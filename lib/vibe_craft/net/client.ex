@@ -28,6 +28,8 @@ defmodule VibeCraft.Net.Client do
 
   @type t :: GenServer.server()
 
+  @dialyzer {:nowarn_function, [connect: 3, rpc: 2, fetch_and_decode: 2]}
+
   # ── Client API ─────────────────────────────────────────────────────────────
 
   @doc """
@@ -45,7 +47,11 @@ defmodule VibeCraft.Net.Client do
   @doc "Close the TCP connection and stop the client process."
   @spec disconnect(t()) :: :ok
   def disconnect(client) do
-    GenServer.stop(client)
+    try do
+      GenServer.stop(client)
+    catch
+      :exit, {:noproc, _} -> :ok
+    end
   end
 
   @doc "Register `player_id` with the server lobby."
