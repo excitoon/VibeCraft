@@ -8,9 +8,11 @@ defmodule VibeCraft.Net.ServerClientTest do
     {:ok, server} = Server.start_link(port: 0)
     port = Server.port(server)
     {:ok, client} = Client.connect("localhost", port)
+
     on_exit(fn ->
       if Process.alive?(client), do: Client.disconnect(client)
     end)
+
     %{client: client}
   end
 
