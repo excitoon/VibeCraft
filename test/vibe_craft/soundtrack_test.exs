@@ -7,7 +7,7 @@ defmodule VibeCraft.SoundtrackTest do
     test "returns a non-empty list" do
       tracks = Soundtrack.list_tracks()
       assert is_list(tracks)
-      assert length(tracks) > 0
+      assert tracks != []
     end
 
     test "includes expected track atoms" do
@@ -25,7 +25,7 @@ defmodule VibeCraft.SoundtrackTest do
     test "returns a non-empty list" do
       voiceovers = Soundtrack.list_voiceovers()
       assert is_list(voiceovers)
-      assert length(voiceovers) > 0
+      assert voiceovers != []
     end
 
     test "includes expected voiceover atoms" do

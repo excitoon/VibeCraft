@@ -26,6 +26,8 @@ defmodule VibeCraft.Net.Client do
 
   alias VibeCraft.Net.Protocol
 
+  @dialyzer {:nowarn_function, rpc: 2, fetch_and_decode: 2}
+
   @type t :: GenServer.server()
 
   # ── Client API ─────────────────────────────────────────────────────────────
@@ -37,7 +39,7 @@ defmodule VibeCraft.Net.Client do
   Pass GenServer options (e.g. `name:`) via `opts`.
   """
   @spec connect(String.t() | :inet.ip_address(), :inet.port_number(), keyword()) ::
-          {:ok, t()} | {:error, term()}
+          {:ok, t()} | :ignore | {:error, term()}
   def connect(host, port, opts \\ []) do
     GenServer.start_link(__MODULE__, {host, port}, opts)
   end

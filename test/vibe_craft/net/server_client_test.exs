@@ -8,7 +8,9 @@ defmodule VibeCraft.Net.ServerClientTest do
     {:ok, server} = Server.start_link(port: 0)
     port = Server.port(server)
     {:ok, client} = Client.connect("localhost", port)
-    on_exit(fn -> Client.disconnect(client) end)
+    on_exit(fn ->
+      if Process.alive?(client), do: Client.disconnect(client)
+    end)
     %{client: client}
   end
 
@@ -110,9 +112,9 @@ defmodule VibeCraft.Net.ServerClientTest do
       {:ok, c2} = Client.connect("localhost", port)
 
       on_exit(fn ->
-        Client.disconnect(c1)
-        Client.disconnect(c2)
-        GenServer.stop(server)
+        if Process.alive?(c1), do: Client.disconnect(c1)
+        if Process.alive?(c2), do: Client.disconnect(c2)
+        if Process.alive?(server), do: GenServer.stop(server)
       end)
 
       :ok = Client.register_player(c1, "player1")
