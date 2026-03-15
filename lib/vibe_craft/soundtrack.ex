@@ -64,7 +64,7 @@ defmodule VibeCraft.Soundtrack do
     :spell_cast
   ]
 
-  @dialyzer {:nowarn_function, [list_tracks: 0, list_voiceovers: 0]}
+  @dialyzer {:nowarn_function, list_tracks: 0, list_voiceovers: 0}
 
   @doc "Return the list of all available music tracks."
   @spec list_tracks() :: [track()]

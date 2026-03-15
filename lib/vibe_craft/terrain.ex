@@ -108,7 +108,8 @@ defmodule VibeCraft.Terrain do
     end)
   end
 
-  @dialyzer {:nowarn_function, [compute_normal: 2]}
+  @dialyzer {:nowarn_function, compute_normal: 2}
+
   @spec compute_normal(t(), position()) :: normal()
   defp compute_normal(terrain, {c, r}) do
     left = elevation_at(terrain, {c - 1, r})

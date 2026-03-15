@@ -26,9 +26,9 @@ defmodule VibeCraft.Net.Client do
 
   alias VibeCraft.Net.Protocol
 
-  @type t :: GenServer.server()
+  @dialyzer {:nowarn_function, connect: 3, rpc: 2, fetch_and_decode: 2}
 
-  @dialyzer {:nowarn_function, [connect: 3, rpc: 2, fetch_and_decode: 2]}
+  @type t :: GenServer.server()
 
   # ── Client API ─────────────────────────────────────────────────────────────
 
@@ -39,7 +39,7 @@ defmodule VibeCraft.Net.Client do
   Pass GenServer options (e.g. `name:`) via `opts`.
   """
   @spec connect(String.t() | :inet.ip_address(), :inet.port_number(), keyword()) ::
-          {:ok, t()} | {:error, term()}
+          {:ok, t()} | :ignore | {:error, term()}
   def connect(host, port, opts \\ []) do
     GenServer.start_link(__MODULE__, {host, port}, opts)
   end
@@ -47,11 +47,7 @@ defmodule VibeCraft.Net.Client do
   @doc "Close the TCP connection and stop the client process."
   @spec disconnect(t()) :: :ok
   def disconnect(client) do
-    try do
-      GenServer.stop(client)
-    catch
-      :exit, {:noproc, _} -> :ok
-    end
+    GenServer.stop(client)
   end
 
   @doc "Register `player_id` with the server lobby."
