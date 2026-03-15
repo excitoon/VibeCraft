@@ -25,6 +25,8 @@ defmodule VibeCraft.Net.Server do
   alias VibeCraft.Lobby
   alias VibeCraft.Net.ConnectionHandler
 
+  @dialyzer {:nowarn_function, init_server: 1}
+
   @default_port 4001
 
   # ── Client API ─────────────────────────────────────────────────────────────

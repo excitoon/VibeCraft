@@ -95,7 +95,8 @@ defmodule VibeCraft.Terrain do
   @spec recompute_normals_around(t(), position()) :: %{position() => normal()}
   defp recompute_normals_around(%__MODULE__{width: w, height: h} = terrain, {c, r}) do
     affected =
-      for dr <- -1..1, dc <- -1..1,
+      for dr <- -1..1,
+          dc <- -1..1,
           nr = r + dr,
           nc = c + dc,
           nr >= 0 and nr < h and nc >= 0 and nc < w do
@@ -106,6 +107,8 @@ defmodule VibeCraft.Terrain do
       Map.put(acc, pos, compute_normal(terrain, pos))
     end)
   end
+
+  @dialyzer {:nowarn_function, compute_normal: 2}
 
   @spec compute_normal(t(), position()) :: normal()
   defp compute_normal(terrain, {c, r}) do

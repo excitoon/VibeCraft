@@ -16,6 +16,8 @@ defmodule VibeCraft.Net.Protocol do
 
   @header_size 4
 
+  @dialyzer {:nowarn_function, encode: 1}
+
   @doc "Encode `term` as a length-prefixed binary frame."
   @spec encode(term()) :: binary()
   def encode(term) do
