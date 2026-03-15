@@ -1,5 +1,9 @@
 # VibeCraft
 
+<p align="center">
+  <img src="priv/art/banner.svg" alt="VibeCraft — An Original RTS · RPG" width="900"/>
+</p>
+
 An original RTS game with RPG elements, supporting Versions I, II, and III mechanics.
 
 ## Overview
