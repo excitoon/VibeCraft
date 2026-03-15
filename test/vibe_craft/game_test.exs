@@ -1,7 +1,7 @@
 defmodule VibeCraft.GameTest do
   use ExUnit.Case, async: true
 
-  alias VibeCraft.{Building, Game, Resources, Unit}
+  alias VibeCraft.{Game, Resources}
   alias VibeCraft.Map.Map, as: GameMap
   alias VibeCraft.Map.Tile
 

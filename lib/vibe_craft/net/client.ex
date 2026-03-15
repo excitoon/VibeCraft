@@ -26,7 +26,7 @@ defmodule VibeCraft.Net.Client do
 
   alias VibeCraft.Net.Protocol
 
-  @dialyzer {:nowarn_function, rpc: 2, fetch_and_decode: 2}
+  @dialyzer {:nowarn_function, connect: 3, rpc: 2, fetch_and_decode: 2}
 
   @type t :: GenServer.server()
 

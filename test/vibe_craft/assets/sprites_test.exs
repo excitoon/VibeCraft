@@ -100,4 +100,22 @@ defmodule VibeCraft.Assets.SpritesTest do
       assert_valid_16x16(Sprites.building_barracks())
     end
   end
+
+  describe "item_sword/0" do
+    test "returns a 16×16 RGBA sprite" do
+      assert_valid_16x16(Sprites.item_sword())
+    end
+  end
+
+  describe "item_health_potion/0" do
+    test "returns a 16×16 RGBA sprite" do
+      assert_valid_16x16(Sprites.item_health_potion())
+    end
+  end
+
+  describe "item_shield/0" do
+    test "returns a 16×16 RGBA sprite" do
+      assert_valid_16x16(Sprites.item_shield())
+    end
+  end
 end
