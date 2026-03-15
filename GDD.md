@@ -47,8 +47,8 @@ out the experience.
 - Built on Elixir/OTP: the same technology that powers fault-tolerant telecoms now
   drives a concurrent, hot-reloadable game engine.
 - 100 % original IP — every sprite, sound, and line of lore is ours.
-- Three tiers of mechanical depth (Version I → II → III) let new players ramp up
-  while veterans dive into the full RPG/strategy sandbox.
+- Deep mechanical layers spanning ground, naval, and air combat let new players
+  ramp up while veterans dive into the full RPG/strategy sandbox.
 - First-class multiplayer: deterministic tick-based simulation, TCP networking,
   Elo-rated matchmaking, and built-in replay recording.
 
@@ -517,9 +517,9 @@ VibeCraft (application)
 | Phase | Goal | Status |
 |-------|------|--------|
 | **Phase 0** | Foundation — repo, CI, GFX bindings, asset pipeline | ✓ Complete |
-| **Phase 1** | Version I — playable skirmish with ground units, buildings, resources, AI | ✓ Complete |
-| **Phase 2** | Version II — naval/air units, heroes, spells, TCP multiplayer, campaign DSL | ✓ Complete |
-| **Phase 3** | Version III — 3-D terrain, day/night, inventory, editor, replay, matchmaking | ✓ Complete |
+| **Phase 1** | Playable skirmish with ground units, buildings, resources, AI | ✓ Complete |
+| **Phase 2** | Naval/air units, heroes, spells, TCP multiplayer, campaign DSL | ✓ Complete |
+| **Phase 3** | 3-D terrain, day/night, inventory, editor, replay, matchmaking | ✓ Complete |
 | **Phase 4** | Polish — performance, accessibility, localisation, distribution | In Progress |
 
 See [ROADMAP.md](ROADMAP.md) for detailed task breakdowns.
