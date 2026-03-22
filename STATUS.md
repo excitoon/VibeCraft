@@ -16,9 +16,9 @@ Progress is tracked in [ROADMAP.md](ROADMAP.md).
 
 | Milestone | Target | Notes |
 |---|---|---|
-| Phase 1 — Chapter I: Origins | 15 Mar 2026 | Playable single-player skirmish (map, units, resources, simple AI) |
-| Phase 2 — Chapter II: Tides of War | 15 Mar 2026 | Naval & air units, hero system, TCP multiplayer lobby |
-| Phase 3 — Chapter III: Age of Heroes | 15 Mar 2026 | 3-D terrain, RPG elements, map editor, ranked matchmaking |
+| Phase 1 — Version I Mechanics | 15 Mar 2026 | Playable single-player skirmish (map, units, resources, simple AI) |
+| Phase 2 — Version II Mechanics | 15 Mar 2026 | Naval & air units, hero system, TCP multiplayer lobby |
+| Phase 3 — Version III Experience | 15 Mar 2026 | 3-D terrain, RPG elements, map editor, ranked matchmaking |
 | Phase 4 — Polish & Release | 15 Mar 2026 | Performance, accessibility, localisation, distribution packaging |
 | **Public Release** | **15 Mar 2026** | Steam / itch.io release after public beta and bug-fix sprint |
 

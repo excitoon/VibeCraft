@@ -4,11 +4,11 @@
   <img src="priv/art/banner.svg" alt="VibeCraft — An Original RTS · RPG" width="900"/>
 </p>
 
-An original RTS game with RPG elements, spanning three chapters: **Chapter I: Origins**, **Chapter II: Tides of War**, and **Chapter III: Age of Heroes**.
+An original RTS game with RPG elements, supporting Versions I, II, and III mechanics.
 
 ## Overview
 
-VibeCraft is built with original IP — all graphics and animations are our own. The game is written in [Elixir](https://elixir-lang.org/) and targets the **Chapter III: Age of Heroes** experience while also supporting the earlier chapters. We do not reference any third-party protected trademarks (e.g. "WarCraft") anywhere in the project.
+VibeCraft is built with original IP — all graphics and animations are our own. The game is written in [Elixir](https://elixir-lang.org/) and targets the Version III experience while also supporting Version I and II mechanics. We do not reference any third-party protected trademarks (e.g. "WarCraft") anywhere in the project.
 
 ## Game Design Document
 

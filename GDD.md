@@ -514,13 +514,13 @@ VibeCraft (application)
 
 ## Development Roadmap
 
-| Phase | Chapter | Goal | Status |
-|-------|---------|------|--------|
-| **Phase 0** | — | Foundation — repo, CI, GFX bindings, asset pipeline | ✓ Complete |
-| **Phase 1** | **Chapter I: Origins** | Ground units, buildings, resources, AI | ✓ Complete |
-| **Phase 2** | **Chapter II: Tides of War** | Naval/air units, heroes, spells, TCP multiplayer, campaign DSL | ✓ Complete |
-| **Phase 3** | **Chapter III: Age of Heroes** | 3-D terrain, day/night, inventory, editor, replay, matchmaking | ✓ Complete |
-| **Phase 4** | — | Polish — performance, accessibility, localisation, distribution | In Progress |
+| Phase | Goal | Status |
+|-------|------|--------|
+| **Phase 0** | Foundation — repo, CI, GFX bindings, asset pipeline | ✓ Complete |
+| **Phase 1** | Playable skirmish with ground units, buildings, resources, AI | ✓ Complete |
+| **Phase 2** | Naval/air units, heroes, spells, TCP multiplayer, campaign DSL | ✓ Complete |
+| **Phase 3** | 3-D terrain, day/night, inventory, editor, replay, matchmaking | ✓ Complete |
+| **Phase 4** | Polish — performance, accessibility, localisation, distribution | In Progress |
 
 See [ROADMAP.md](ROADMAP.md) for detailed task breakdowns.
 

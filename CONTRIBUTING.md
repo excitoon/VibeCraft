@@ -13,8 +13,8 @@
 
 ### Game Design
 
-- The primary target is the **Chapter III: Age of Heroes** experience.
-- **Chapter I: Origins** and **Chapter II: Tides of War** mechanics are supported as well.
+- The primary target is the Version III experience.
+- Version I and Version II mechanics are supported as well.
 
 ### Technology
 
