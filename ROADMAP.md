@@ -21,9 +21,20 @@ This keeps the architecture clean: BEAM handles concurrency and state; the NIF l
 - [x] GFX bindings prototype — SDL2 window + OpenGL context via NIF
 - [x] Asset pipeline — load and display a single original sprite
 
-### Phase 1 — Version I Mechanics
+### Phase 1 — Chapter I: Origins
 
-Goal: a playable single-player skirmish with Version I rules.
+*The Founding Conflict — ground-based warfare where it all begins.*
+
+Chapter I introduces the core RTS loop on a two-dimensional tile battlefield.
+Two factions — the disciplined **Human Alliance** and the savage **Orc Horde** —
+clash over Gold and Lumber in head-to-head skirmishes fought entirely on land.
+There are no heroes, no spells, no sea, and no sky; just workers, fighters,
+buildings, and the relentless pressure of a tick-based economy.  Mastering
+Chapter I means mastering the fundamentals: resource pacing, base layout, and
+the art of the ground assault.
+
+**Defining mechanics:** tile map, fog of war, resource gathering, building
+training queues, melee combat, simple AI.
 
 - [x] Map loader (tile-based terrain, fog of war)
 - [x] Unit system — movement, basic melee combat
@@ -32,9 +43,20 @@ Goal: a playable single-player skirmish with Version I rules.
 - [x] Simple AI opponent
 - [x] Original art set: terrain tiles, at least two unit types, two building types
 
-### Phase 2 — Version II Mechanics
+### Phase 2 — Chapter II: Tides of War
 
-Goal: extend Version I with naval and air units plus a campaign framework.
+*Land, Sea, and Sky — the conflict expands to every dimension.*
+
+Chapter II shatters the limits of the ground layer.  Oil tankers and warships
+contest sea lanes; gryphon riders and dragons duel above the clouds; and, for
+the first time, powerful **Hero** characters stride onto the battlefield —
+leveling up, learning spells, and carrying hard-won equipment from one
+campaign mission to the next.  A full TCP multiplayer lobby lets players bring
+the conflict online, while the Elixir-macro campaign DSL enables hand-crafted
+story missions with scripted triggers and objectives.
+
+**Defining mechanics:** naval layer, air layer, hero leveling, mana & spells,
+campaign mission DSL, TCP multiplayer lobby.
 
 - [x] Naval units and sea-lane pathfinding
 - [x] Air units and altitude layer
@@ -44,9 +66,24 @@ Goal: extend Version I with naval and air units plus a campaign framework.
 - [x] Multiplayer lobby over TCP (BEAM distribution or raw sockets)
 - [x] Expanded original art set
 
-### Phase 3 — Version III Experience (primary target)
+### Phase 3 — Chapter III: Age of Heroes (primary target)
 
-Goal: full feature parity with a modern RTS/RPG hybrid.
+*A Living World — the full RTS/RPG hybrid experience.*
+
+Chapter III transforms the battlefield into a breathing, three-dimensional
+world.  Height maps give hills and valleys real strategic weight; a dynamic
+day/night cycle shifts ambient light and alters unit sight ranges throughout
+every match.  Heroes grow richer through a deep **inventory, loot, and
+crafting** system — finding rare drops, visiting shops, and forging legendary
+equipment at the crafting station.  A built-in **scenario editor** empowers
+the community to author custom campaigns, while the **replay system** captures
+every match for post-game analysis.  Ranked **Elo matchmaking** ensures every
+ladder game is a fair test of skill.  Chapter III is VibeCraft's flagship
+experience and the primary development target.
+
+**Defining mechanics:** 3-D terrain with height maps and normal-mapped
+lighting, day/night ambient cycle, inventory/loot/crafting, scenario editor,
+tick-indexed replay, Elo matchmaking ladder.
 
 - [x] 3-D terrain rendering (height maps, normal mapping)
 - [x] Day/night cycle and dynamic lighting
@@ -85,7 +122,7 @@ The following projects serve as research references for engine design, mechanics
 
 ### 1. Original Game
 
-The original commercial RTS title (Version I through Version III) that VibeCraft draws its mechanical inspiration from.
+The original commercial RTS title (Chapter I through Chapter III) that VibeCraft draws its mechanical inspiration from.
 
 ### 2. Dedicated Open-Source RTS Engine Re-implementations
 

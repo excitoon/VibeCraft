@@ -17,7 +17,7 @@ resources and construct buildings; fighters hold the line in melee combat.
 |-------------|-------------|--------------|
 | `:peasant`  | Worker      | `:town_hall` |
 | `:footman`  | Fighter     | `:barracks`  |
-| `:gryphon`  | Air fighter | *(Phase 2)*  |
+| `:gryphon`  | Air fighter | *(Chapter II)*  |
 
 ### Orc Horde
 
@@ -28,7 +28,7 @@ damage than their Human counterparts, giving the Horde an aggressive edge.
 |----------|-------------|--------------|
 | `:peon`  | Worker      | `:town_hall` |
 | `:grunt` | Fighter     | `:barracks`  |
-| `:dragon`| Air fighter | *(Phase 2)*  |
+| `:dragon`| Air fighter | *(Chapter II)*  |
 
 ---
 
@@ -55,7 +55,7 @@ its own movement rules.
 | `:peon`    | Orc    | Worker  | 30 | 3      | 4     | 75   | 0      | 45            |
 | `:grunt`   | Orc    | Fighter | 60 | 8      | 4     | 100  | 0      | 60            |
 
-### Naval units *(Phase 2)*
+### Naval units *(Chapter II)*
 
 Naval units move on water tiles and cannot traverse land.
 
@@ -66,7 +66,7 @@ Naval units move on water tiles and cannot traverse land.
 | `:oil_tanker`  | Naval worker    | 60  | 0      | 4     |
 | `:transport`   | Troop transport | 80  | 0      | 4     |
 
-### Air units *(Phase 2)*
+### Air units *(Chapter II)*
 
 Air units fly over any terrain and cannot be blocked by ground or naval obstacles.
 
@@ -94,10 +94,10 @@ Only the front entry counts down each tick; finished units spawn on an adjacent 
 
 ---
 
-## Heroes *(Phase 2 — planned)*
+## Heroes *(Chapter II)*
 
 Hero units are powerful named characters that persist across missions and gain experience.
-They will be introduced in Phase 2 alongside the spell and campaign systems.
+They were introduced in Chapter II alongside the spell and campaign systems.
 
 ### Planned hero types
 
@@ -106,7 +106,7 @@ They will be introduced in Phase 2 alongside the spell and campaign systems.
 | `:paladin`      | Human | Holy warrior      |
 | `:death_knight` | Orc   | Dark spellcaster  |
 
-### Hero mechanics (planned)
+### Hero mechanics
 
 - **Experience (XP)** — earned by defeating enemy units; heroes level up at XP thresholds.
 - **Mana** — a separate resource pool consumed by spells; regenerates over time.
