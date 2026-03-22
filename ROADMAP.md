@@ -21,9 +21,9 @@ This keeps the architecture clean: BEAM handles concurrency and state; the NIF l
 - [x] GFX bindings prototype — SDL2 window + OpenGL context via NIF
 - [x] Asset pipeline — load and display a single original sprite
 
-### Phase 1 — Version I Mechanics
+### Phase 1 — Chapter I Mechanics
 
-Goal: a playable single-player skirmish with Version I rules.
+Goal: a playable single-player skirmish with Chapter I rules.
 
 - [x] Map loader (tile-based terrain, fog of war)
 - [x] Unit system — movement, basic melee combat
@@ -32,9 +32,9 @@ Goal: a playable single-player skirmish with Version I rules.
 - [x] Simple AI opponent
 - [x] Original art set: terrain tiles, at least two unit types, two building types
 
-### Phase 2 — Version II Mechanics
+### Phase 2 — Chapter II Mechanics
 
-Goal: extend Version I with naval and air units plus a campaign framework.
+Goal: extend Chapter I with naval and air units plus a campaign framework.
 
 - [x] Naval units and sea-lane pathfinding
 - [x] Air units and altitude layer
@@ -44,7 +44,7 @@ Goal: extend Version I with naval and air units plus a campaign framework.
 - [x] Multiplayer lobby over TCP (BEAM distribution or raw sockets)
 - [x] Expanded original art set
 
-### Phase 3 — Version III Experience (primary target)
+### Phase 3 — Chapter III Experience (primary target)
 
 Goal: full feature parity with a modern RTS/RPG hybrid.
 
@@ -85,7 +85,7 @@ The following projects serve as research references for engine design, mechanics
 
 ### 1. Original Game
 
-The original commercial RTS title (Version I through Version III) that VibeCraft draws its mechanical inspiration from.
+The original commercial RTS title (Chapter I through Chapter III) that VibeCraft draws its mechanical inspiration from.
 
 ### 2. Dedicated Open-Source RTS Engine Re-implementations
 
