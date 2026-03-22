@@ -99,9 +99,9 @@ immediate effect.
 | Spell        | Hero         | Mana | Effect                                  |
 |--------------|--------------|------|-----------------------------------------|
 | Holy Light   | Paladin      | 65   | Heal target ally for 200 HP             |
-| Resurrect    | Paladin      | 100  | Revive a fallen friendly unit           |
+| Resurrect    | Paladin      | 200  | Revive a fallen friendly unit           |
 | Death Coil   | Death Knight | 50   | Deal 100 damage to target               |
-| Animate Dead | Death Knight | 100  | Raise an enemy corpse to fight for you  |
+| Animate Dead | Death Knight | 125  | Raise an enemy corpse to fight for you  |
 
 Spells add a micro-management layer on top of the macro-economic RTS loop.  A
 well-timed Holy Light can save an army; a clutch Animate Dead can turn a lost

@@ -60,14 +60,14 @@ provide consumable effects.
 
 ### Shop Items
 
-| Item            | Type       | Gold | Effect                   |
-|-----------------|------------|------|--------------------------|
-| Health Potion   | Consumable | 50   | Restore HP               |
-| Mana Potion     | Consumable | 75   | Restore Mana             |
-| Sword of Light  | Equipment  | 200  | Increase Attack          |
-| Shield of Iron  | Equipment  | 200  | Increase Defense         |
-| Ring of Power   | Equipment  | 400  | Increase Attack & Defense|
-| Elixir of Speed | Consumable | 150  | Increase Movement Speed  |
+| Item            | Type       | Gold      | Effect                   |
+|-----------------|------------|-----------|--------------------------|
+| Health Potion   | Consumable | 50        | Restore HP               |
+| Mana Potion     | Consumable | 75        | Restore Mana             |
+| Sword of Light  | Equipment  | 400       | Increase Attack          |
+| Shield of Iron  | Equipment  | 300       | Increase Defense         |
+| Ring of Power   | Equipment  | Craft only| Increase Attack & Defense|
+| Elixir of Speed | Consumable | 125       | Increase Movement Speed  |
 
 ### Crafting
 
@@ -134,11 +134,11 @@ Five visible ranks map to rating tiers:
 
 | Rank     | Rating Range |
 |----------|-------------|
-| Bronze   | < 1300      |
-| Silver   | 1300 – 1499 |
-| Gold     | 1500 – 1699 |
-| Platinum | 1700 – 1899 |
-| Diamond  | ≥ 1900      |
+| Bronze   | 0 – 999     |
+| Silver   | 1000 – 1499 |
+| Gold     | 1500 – 1999 |
+| Platinum | 2000 – 2499 |
+| Diamond  | ≥ 2500      |
 
 ---
 
