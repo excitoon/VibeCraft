@@ -122,6 +122,60 @@ jobs:
           # Copy the entire Mix release into Resources
           cp -r _build/prod/rel/vibe_craft/. "VibeCraft.app/Contents/Resources/"
 
+          # Bundle SDL2 and GLEW so the app works on machines without Homebrew.
+          # The NIF dylib links against Homebrew-installed SDL2/GLEW; users who
+          # don't have Homebrew would see the app exit immediately at startup
+          # because the dynamic linker can't resolve the library references.
+          mkdir -p "VibeCraft.app/Contents/Frameworks"
+
+          SDL2_PREFIX="$(brew --prefix sdl2)"
+          GLEW_PREFIX="$(brew --prefix glew)"
+
+          # Copy dylibs (follow symlinks to capture the real versioned file)
+          # and place them under simple names so patching is predictable.
+          cp -L "${SDL2_PREFIX}/lib/libSDL2.dylib" \
+            "VibeCraft.app/Contents/Frameworks/libSDL2.dylib"
+          cp -L "${GLEW_PREFIX}/lib/libGLEW.dylib" \
+            "VibeCraft.app/Contents/Frameworks/libGLEW.dylib"
+
+          # Give each bundled dylib its own @rpath-based install name so that
+          # other binaries that reference @rpath/libXxx.dylib can find them.
+          install_name_tool -id "@rpath/libSDL2.dylib" \
+            "VibeCraft.app/Contents/Frameworks/libSDL2.dylib"
+          install_name_tool -id "@rpath/libGLEW.dylib" \
+            "VibeCraft.app/Contents/Frameworks/libGLEW.dylib"
+
+          # Locate the compiled Erlang NIF inside the bundle.
+          NIF_PATH="$(find "VibeCraft.app/Contents/Resources" \
+            -name "vibe_craft_nif.dylib" | head -1)"
+
+          # Add an @rpath entry to the NIF so dyld can find the bundled
+          # Frameworks directory at load time.
+          # NIF lives at:  Resources/lib/vibe_craft-VERSION/priv/
+          # Frameworks at: Contents/Frameworks/
+          # @loader_path/../../../../Frameworks resolves correctly.
+          # Suppress the expected "duplicate rpath" error (exit 1) while
+          # still propagating any other install_name_tool failures.
+          RPATH="@loader_path/../../../../Frameworks"
+          if ! install_name_tool -add_rpath "$RPATH" "$NIF_PATH" 2>/dev/null; then
+            otool -l "$NIF_PATH" | grep -q "$RPATH" || \
+              { echo "install_name_tool -add_rpath failed unexpectedly" >&2; exit 1; }
+          fi
+
+          # Rewrite the NIF's absolute Homebrew library references to use
+          # @rpath so the bundled copies are used instead.
+          # Match on the library file name (e.g. /libSDL2.) to avoid
+          # accidentally matching libSDL2_image or similar variants.
+          SDL2_REF="$(otool -L "$NIF_PATH" | awk '/\/libSDL2\./{print $1}')"
+          GLEW_REF="$(otool -L "$NIF_PATH" | awk '/\/libGLEW\./{print $1}')"
+
+          [ -n "$SDL2_REF" ] && \
+            install_name_tool -change "$SDL2_REF" \
+              "@rpath/libSDL2.dylib" "$NIF_PATH"
+          [ -n "$GLEW_REF" ] && \
+            install_name_tool -change "$GLEW_REF" \
+              "@rpath/libGLEW.dylib" "$NIF_PATH"
+
           # Stage the DMG: app bundle + /Applications symlink for drag-and-drop UX
           mkdir -p dmg_staging
           cp -r "VibeCraft.app" dmg_staging/
