@@ -32,7 +32,7 @@ defmodule VibeCraft.Assets.Model do
   `{vertex_index, tex_coord_index | nil, normal_index | nil}`.
   Indices are 1-based.
   """
-  @type face_vertex :: {pos_integer(), non_neg_integer() | nil, non_neg_integer() | nil}
+  @type face_vertex :: {pos_integer(), pos_integer() | nil, pos_integer() | nil}
 
   @type face :: [face_vertex(), ...]
 

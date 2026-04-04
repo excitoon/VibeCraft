@@ -444,6 +444,8 @@ community.
 - All source artwork stored as SVG for clean scaling; rasterised to pixel art at
   build time.
 - Palette-driven aesthetic with distinct color identities for each faction.
+- **Wavefront OBJ** (`.obj`) for 3-D unit models — plain-text format that
+  diffs cleanly in Git and is supported by all major 3-D tools.
 
 ### Audio
 
@@ -506,6 +508,8 @@ VibeCraft (application)
 ├── GFX.Renderer     — OpenGL sprite renderer
 ├── GFX.NIF          — native bindings
 ├── Assets.Sprites   — built-in pixel art
+├── Assets.Model     — 3-D mesh data (vertices, normals, faces)
+├── Assets.ModelLoader — Wavefront OBJ parser
 ├── Assets.Loader    — external asset loader
 └── Soundtrack       — audio playback
 ```
