@@ -1,61 +1,72 @@
 # VibeCraft — Fighter Material Library
 #
 # Material definitions for the Epic Fantasy Knight model.
-# Uses Wavefront MTL format for maximum compatibility.
+# Uses Wavefront MTL format with texture maps for realistic rendering.
 #
 # Materials:
-#   armor  - Polished steel plate armor (silver/grey metallic)
-#   gold   - Gold ornamental trim and decorations
-#   cape   - Deep crimson fabric with slight sheen
-#   leather - Dark brown leather for grip and straps
-#   blade  - Bright polished steel for sword blade
+#   armor  - Polished steel plate armor with brushed metal texture
+#   gold   - Gold ornamental trim with engraved pattern
+#   cape   - Deep crimson velvet fabric texture
+#   leather - Dark brown leather with grain texture
+#   blade  - Mirror-polished steel sword blade
+#   shield - Heraldic shield with decorative design
 
-# ARMOR - Polished Steel
-# A silvery metallic finish with high specular
+# ARMOR - Polished Steel with Brushed Metal Texture
 newmtl armor
-Ka 0.15 0.15 0.18        # Ambient: cool grey
-Kd 0.55 0.55 0.60        # Diffuse: steel grey
-Ks 0.90 0.90 0.95        # Specular: bright highlights
-Ns 128.0                  # Shininess: polished metal
-d 1.0                     # Opacity: fully opaque
-illum 2                   # Illumination model: highlights + ambient
+Ka 0.15 0.15 0.18
+Kd 0.55 0.55 0.60
+Ks 0.90 0.90 0.95
+Ns 128.0
+d 1.0
+illum 2
+map_Kd ../textures/armor.png
 
-# GOLD - Ornamental Trim
-# Rich gold with warm tones
+# GOLD - Ornamental Trim with Engraved Pattern
 newmtl gold
-Ka 0.24 0.20 0.07        # Ambient: warm gold
-Kd 0.85 0.70 0.25        # Diffuse: rich gold
-Ks 1.00 0.90 0.50        # Specular: bright gold shine
-Ns 96.0                   # Shininess: smooth metal
+Ka 0.24 0.20 0.07
+Kd 0.85 0.70 0.25
+Ks 1.00 0.90 0.50
+Ns 96.0
 d 1.0
 illum 2
+map_Kd ../textures/gold.png
 
-# CAPE - Deep Crimson Fabric
-# Rich red velvet-like material
+# CAPE - Deep Crimson Velvet Fabric
 newmtl cape
-Ka 0.15 0.02 0.02        # Ambient: dark red
-Kd 0.70 0.10 0.12        # Diffuse: crimson red
-Ks 0.30 0.08 0.10        # Specular: slight sheen
-Ns 32.0                   # Shininess: fabric (low)
+Ka 0.15 0.02 0.02
+Kd 0.70 0.10 0.12
+Ks 0.30 0.08 0.10
+Ns 32.0
 d 1.0
 illum 2
+map_Kd ../textures/cape.png
 
-# LEATHER - Dark Brown
-# Worn leather for sword grip and straps
+# LEATHER - Dark Brown Leather with Grain
 newmtl leather
-Ka 0.08 0.05 0.03        # Ambient: dark brown
-Kd 0.35 0.22 0.12        # Diffuse: brown leather
-Ks 0.15 0.10 0.08        # Specular: slight shine
-Ns 16.0                   # Shininess: rough (low)
+Ka 0.08 0.05 0.03
+Kd 0.35 0.22 0.12
+Ks 0.15 0.10 0.08
+Ns 16.0
 d 1.0
 illum 2
+map_Kd ../textures/leather.png
 
-# BLADE - Polished Sword Steel
-# Bright, mirror-like finish for the sword
+# BLADE - Mirror-Polished Sword Steel
 newmtl blade
-Ka 0.20 0.20 0.25        # Ambient: cold steel
-Kd 0.70 0.70 0.78        # Diffuse: bright steel
-Ks 1.00 1.00 1.00        # Specular: mirror shine
-Ns 200.0                  # Shininess: mirror polish
+Ka 0.20 0.20 0.25
+Kd 0.70 0.70 0.78
+Ks 1.00 1.00 1.00
+Ns 200.0
 d 1.0
 illum 2
+map_Kd ../textures/blade.png
+
+# SHIELD - Heraldic Shield with Decorative Design
+newmtl shield
+Ka 0.10 0.10 0.15
+Kd 0.40 0.40 0.50
+Ks 0.60 0.60 0.70
+Ns 64.0
+d 1.0
+illum 2
+map_Kd ../textures/shield.png
