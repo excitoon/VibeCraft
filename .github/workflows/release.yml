@@ -54,6 +54,17 @@ jobs:
         run: mix deps.get --only prod
 
       - name: Compile (including NIF)
+        if: runner.os != 'Windows'
+        run: mix compile
+
+      # On Windows we pass the vcpkg toolchain file so that cmake's
+      # find_package() calls can locate SDL2 and GLEW installed by vcpkg.
+      # C:\vcpkg is the pre-installed vcpkg root on GitHub Actions Windows runners.
+      - name: Compile (including NIF) - Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          CMAKE_TOOLCHAIN_FILE: C:\vcpkg\scripts\buildsystems\vcpkg.cmake
         run: mix compile
 
       - name: Build release
