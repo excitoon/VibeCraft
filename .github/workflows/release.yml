@@ -21,7 +21,7 @@ jobs:
             os: ubuntu-latest
           - name: macos-x86_64
             os: macos-15-intel
-          - name: macos-arm64
+          - name: osx-arm64
             os: macos-14
           - name: windows-x86_64
             os: windows-latest
@@ -71,11 +71,68 @@ jobs:
       - name: Build release
         run: mix release
 
-      - name: Package release (Unix)
-        if: runner.os != 'Windows'
+      - name: Package release (Linux)
+        if: runner.os == 'Linux'
         run: |
           tar -czf "vibe_craft-${{ github.ref_name }}-${{ matrix.name }}.tar.gz" \
             -C _build/prod/rel/vibe_craft .
+
+      - name: Package release (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          # Build a proper .app bundle so users get a drag-to-Applications DMG
+          mkdir -p "VibeCraft.app/Contents/MacOS"
+          mkdir -p "VibeCraft.app/Contents/Resources"
+
+          # Minimal Info.plist required by macOS to treat the folder as an app
+          cat > "VibeCraft.app/Contents/Info.plist" << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleName</key>
+              <string>VibeCraft</string>
+              <key>CFBundleDisplayName</key>
+              <string>VibeCraft</string>
+              <key>CFBundleExecutable</key>
+              <string>vibe_craft</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.vibecraft.VibeCraft</string>
+              <key>CFBundleVersion</key>
+              <string>${{ github.ref_name }}</string>
+              <key>CFBundleShortVersionString</key>
+              <string>${{ github.ref_name }}</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+              <key>LSMinimumSystemVersion</key>
+              <string>12.0</string>
+          </dict>
+          </plist>
+          PLIST
+
+          # Launcher: the Mix release entry point lives in bin/vibe_craft
+          cat > "VibeCraft.app/Contents/MacOS/vibe_craft" << 'LAUNCHER'
+          #!/bin/bash
+          set -e
+          DIR="$(cd "$(dirname "$0")" && pwd)"
+          exec "$DIR/../Resources/bin/vibe_craft" start
+          LAUNCHER
+          chmod +x "VibeCraft.app/Contents/MacOS/vibe_craft"
+
+          # Copy the entire Mix release into Resources
+          cp -r _build/prod/rel/vibe_craft/. "VibeCraft.app/Contents/Resources/"
+
+          # Stage the DMG: app bundle + /Applications symlink for drag-and-drop UX
+          mkdir -p dmg_staging
+          cp -r "VibeCraft.app" dmg_staging/
+          ln -s /Applications dmg_staging/Applications
+
+          hdiutil create \
+            -volname "VibeCraft" \
+            -srcfolder dmg_staging \
+            -ov \
+            -format UDZO \
+            "vibe_craft-${{ github.ref_name }}-${{ matrix.name }}.dmg"
 
       - name: Package release (Windows)
         if: runner.os == 'Windows'
@@ -90,6 +147,7 @@ jobs:
           name: vibe_craft-${{ matrix.name }}
           path: |
             vibe_craft-*.tar.gz
+            vibe_craft-*.dmg
             vibe_craft-*.zip
 
   release:
