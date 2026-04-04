@@ -27,10 +27,19 @@ endif()
 
 set(ERL_INCLUDE "${ERL_ROOT}/erts-${ERTS_VSN}/include")
 
-# ── SDL2 (via pkg-config for reliable Linux detection) ────────────────────
+# ── SDL2 ──────────────────────────────────────────────────────────────────
+# Prefer cmake CONFIG (works with vcpkg on Windows and Homebrew on macOS).
+# Fall back to pkg-config on systems where SDL2 has no cmake package file
+# (e.g. older Ubuntu releases with libsdl2-dev).
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(SDL2 REQUIRED IMPORTED_TARGET sdl2)
+find_package(SDL2 QUIET CONFIG)
+if(SDL2_FOUND)
+  set(SDL2_LINK_TARGET SDL2::SDL2)
+else()
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(SDL2 REQUIRED IMPORTED_TARGET sdl2)
+  set(SDL2_LINK_TARGET PkgConfig::SDL2)
+endif()
 
 # ── OpenGL + GLEW ─────────────────────────────────────────────────────────
 
@@ -45,10 +54,14 @@ target_include_directories(vibe_craft_nif PRIVATE
   "${ERL_INCLUDE}"
 )
 
-target_compile_options(vibe_craft_nif PRIVATE -O2 -Wall -Wextra)
+if(MSVC)
+  target_compile_options(vibe_craft_nif PRIVATE /O2 /W4)
+else()
+  target_compile_options(vibe_craft_nif PRIVATE -O2 -Wall -Wextra)
+endif()
 
 target_link_libraries(vibe_craft_nif PRIVATE
-  PkgConfig::SDL2
+  ${SDL2_LINK_TARGET}
   OpenGL::GL
   GLEW::GLEW
 )
@@ -57,4 +70,5 @@ set_target_properties(vibe_craft_nif PROPERTIES
   PREFIX ""
   OUTPUT_NAME "vibe_craft_nif"
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/priv"
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/priv"
 )
