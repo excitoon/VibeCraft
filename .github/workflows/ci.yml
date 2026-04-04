@@ -65,10 +65,6 @@ jobs:
             os: ubuntu-latest
             otp: "27"
             elixir: "1.17"
-          - name: "macos-x86_64 · OTP 27 · Elixir 1.17"
-            os: macos-13
-            otp: "27"
-            elixir: "1.17"
           - name: "macos-arm64 · OTP 27 · Elixir 1.17"
             os: macos-14
             otp: "27"
