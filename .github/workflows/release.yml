@@ -19,7 +19,7 @@ jobs:
         include:
           - name: linux-x86_64
             os: ubuntu-latest
-          - name: macos-x86_64
+          - name: osx-x86_64
             os: macos-15-intel
           - name: osx-arm64
             os: macos-14
@@ -115,7 +115,7 @@ jobs:
           #!/bin/bash
           set -e
           DIR="$(cd "$(dirname "$0")" && pwd)"
-          exec "$DIR/../Resources/bin/vibe_craft" start
+          exec "$DIR/../Resources/bin/vibe_craft" foreground
           LAUNCHER
           chmod +x "VibeCraft.app/Contents/MacOS/vibe_craft"
 
