@@ -66,6 +66,13 @@ target_link_libraries(vibe_craft_nif PRIVATE
   GLEW::GLEW
 )
 
+# On macOS the linker rejects undefined symbols by default.  Erlang NIF
+# symbols (enif_*) are provided by the Erlang VM at load time, so we must
+# allow them to remain unresolved until then.
+if(APPLE)
+  target_link_options(vibe_craft_nif PRIVATE -undefined dynamic_lookup)
+endif()
+
 set_target_properties(vibe_craft_nif PROPERTIES
   PREFIX ""
   OUTPUT_NAME "vibe_craft_nif"
