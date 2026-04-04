@@ -12,3 +12,5 @@
 
 # Editor temporaries
 .DS_Store
+erl_crash.dump
+mise.toml
