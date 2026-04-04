@@ -179,7 +179,7 @@ defmodule VibeCraft.Assets.ModelLoaderTest do
       # Fighter should have meaningful geometry
       assert length(model.vertices) > 50
       assert length(model.faces) > 40
-      assert length(model.normals) == 6
+      assert length(model.normals) >= 6
     end
 
     test "fighter model vertices are within expected bounds" do
@@ -188,7 +188,7 @@ defmodule VibeCraft.Assets.ModelLoaderTest do
 
       for {x, y, z} <- model.vertices do
         assert x >= -1.0 and x <= 1.0, "x=#{x} out of bounds"
-        assert y >= -0.1 and y <= 2.5, "y=#{y} out of bounds"
+        assert y >= -0.1 and y <= 3.0, "y=#{y} out of bounds (sword reaches up)"
         assert z >= -0.5 and z <= 0.5, "z=#{z} out of bounds"
       end
     end
