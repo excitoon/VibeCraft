@@ -188,7 +188,7 @@ defmodule VibeCraft.Assets.ModelLoaderTest do
 
       for {x, y, z} <- model.vertices do
         assert x >= -1.0 and x <= 1.0, "x=#{x} out of bounds"
-        assert y >= -0.1 and y <= 3.0, "y=#{y} out of bounds (sword reaches up)"
+        assert y >= -0.1 and y <= 3.5, "y=#{y} out of bounds (greatsword raised high)"
         assert z >= -0.5 and z <= 0.5, "z=#{z} out of bounds"
       end
     end
