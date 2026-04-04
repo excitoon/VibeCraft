@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux-x86_64
+            os: ubuntu-latest
+          - name: macos-x86_64
+            os: macos-13
+          - name: macos-arm64
+            os: macos-14
+          - name: windows-x86_64
+            os: windows-latest
+
+    env:
+      MIX_ENV: prod
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Erlang/Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.16"
+          otp-version: "26"
+
+      - name: Install native dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libglew-dev
+
+      - name: Install native dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install sdl2 glew
+
+      - name: Install native dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: vcpkg install sdl2:x64-windows glew:x64-windows
+
+      - name: Install Mix dependencies
+        run: mix deps.get --only prod
+
+      - name: Compile (including NIF)
+        run: mix compile
+
+      - name: Build release
+        run: mix release
+
+      - name: Package release (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          tar -czf "vibe_craft-${{ github.ref_name }}-${{ matrix.name }}.tar.gz" \
+            -C _build/prod/rel/vibe_craft .
+
+      - name: Package release (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path _build/prod/rel/vibe_craft/* `
+            -DestinationPath "vibe_craft-${{ github.ref_name }}-${{ matrix.name }}.zip"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vibe_craft-${{ matrix.name }}
+          path: |
+            vibe_craft-*.tar.gz
+            vibe_craft-*.zip
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: always() && !cancelled()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4.3.0
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: artifacts/*
