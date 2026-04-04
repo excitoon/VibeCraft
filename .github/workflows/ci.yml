@@ -48,8 +48,8 @@ jobs:
 
   # ── compile / test (matrix) ──────────────────────────────────────────────
   test:
-    name: Test (OTP ${{ matrix.otp }} · Elixir ${{ matrix.elixir }})
-    runs-on: ubuntu-latest
+    name: Test (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: read
 
@@ -57,9 +57,21 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - otp: "26"
+          - name: "ubuntu · OTP 26 · Elixir 1.16"
+            os: ubuntu-latest
+            otp: "26"
             elixir: "1.16"
-          - otp: "27"
+          - name: "ubuntu · OTP 27 · Elixir 1.17"
+            os: ubuntu-latest
+            otp: "27"
+            elixir: "1.17"
+          - name: "macos-x86_64 · OTP 27 · Elixir 1.17"
+            os: macos-13
+            otp: "27"
+            elixir: "1.17"
+          - name: "macos-arm64 · OTP 27 · Elixir 1.17"
+            os: macos-14
+            otp: "27"
             elixir: "1.17"
 
     steps:
@@ -71,8 +83,13 @@ jobs:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
 
-      - name: Install native dependencies
+      - name: Install native dependencies (Linux)
+        if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libglew-dev
+
+      - name: Install native dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install sdl2 glew
 
       - name: Restore Mix dependency cache
         uses: actions/cache@v4
