@@ -13,7 +13,7 @@ defmodule VibeCraft.Demo do
   alias VibeCraft.Assets.Sprites
   alias VibeCraft.GFX.{Renderer, Window}
 
-  @dialyzer {:nowarn_function, [run: 0, loop: 5, draw_background: 4]}
+  @dialyzer {:nowarn_function, run: 0, loop: 5, draw_background: 4}
 
   @window_title "VibeCraft"
   @window_width 800
@@ -67,8 +67,8 @@ defmodule VibeCraft.Demo do
   @spec draw_background(Window.t(), non_neg_integer(), VibeCraft.Assets.Sprite.t(), pos_integer()) ::
           :ok
   defp draw_background(window, tex, sprite, tile_size) do
-    cols = Integer.ceil_div(@window_width, tile_size)
-    rows = Integer.ceil_div(@window_height, tile_size)
+    cols = div(@window_width + tile_size - 1, tile_size)
+    rows = div(@window_height + tile_size - 1, tile_size)
 
     for row <- 0..(rows - 1), col <- 0..(cols - 1) do
       Renderer.draw_sprite(window, tex, col * tile_size, row * tile_size, sprite)
