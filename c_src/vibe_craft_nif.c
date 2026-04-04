@@ -15,8 +15,16 @@
  *   delete_texture/2  – free a GPU texture
  */
 
+/* Tell SDL2 that we handle our own application lifecycle.  Without this,
+ * SDL2 on macOS tries to set up an NSApplication from the calling thread,
+ * which must be the main thread under Cocoa.  Erlang NIF functions run on
+ * scheduler threads, not the process main thread, so the Cocoa setup would
+ * abort or deadlock.  Defining SDL_MAIN_HANDLED suppresses the implicit
+ * SDL_main wrapper and requires SDL_SetMainReady() to be called before
+ * SDL_Init() – see nif_load() below. */
 #include <erl_nif.h>
 #include <GL/glew.h>
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 #include <stdio.h>
@@ -456,6 +464,12 @@ static int nif_load(ErlNifEnv *env, void **priv, ERL_NIF_TERM info)
 {
     (void)priv;
     (void)info;
+
+    /* Must be called before SDL_Init() when SDL_MAIN_HANDLED is defined.
+     * On macOS this prevents SDL2 from trying to initialise the Cocoa
+     * NSApplication from the calling (Erlang scheduler) thread, which
+     * is not the process main thread and would trigger an abort. */
+    SDL_SetMainReady();
 
     WINDOW_RES_TYPE = enif_open_resource_type(
         env, NULL, "window_resource",
