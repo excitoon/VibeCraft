@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["master", "copilot/**"]
+    branches: ["master"]
   pull_request:
     branches: ["master"]
 
